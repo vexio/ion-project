@@ -1,0 +1,241 @@
+options:
+	p: &6 ⦿&f
+	t: &f
+	h: &7
+	em: &cInvaild Permissions
+command /proton [<text>]:
+	description: Shows all commands in Proton
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /proton [help]"
+		if arg 1 is "help":
+			send "&6&m---+---&r &eProton &6&m---+---&r"
+			send "&o[] = required &7❘&r&o () = optional"
+			send "&7/gm [num] (player) &8❘&f Changes Gamemode"
+			send "&7/fly (player) &8❘&f Toggles flight"
+			send "&7/tp [player] (player) &8❘&f Teleports to a player"
+			send "&7/tphere [player] &8❘&f Teleports a player to you"
+			send "&7/tpcoords [x] [y] [z] &8❘&f Teleports to set coordinates"
+			send "&7/sethome &8❘&f Sets a home at sender's location"
+			send "&7/home (player) &8❘&f Teleports to player's home"
+			send "&7/setspawn &8❘&f Sets server spawn to sender's location"
+			send "&7/spawn (player) &8❘&f Teleports player to spawn location"
+			send "&7/vanish (player) &8❘&f Vanishes player"
+		if arg 1 is "reload" or "rl":
+			if sender has permission "proton.reload":
+				send "{@p} Reloading {@h}Proton{@t}..."
+				wait 1 second
+				if sender is op:
+					player command "/sk reload %skript%"
+				else:
+					console command "/sk reload %skript%"
+					wait 3 seconds
+					send "{@p} Successfully reloaded {@h}Proton{@t}."
+		else:
+			send "&c&oInvaild Argument."
+			send "&cUsage: /proton [help]"
+command /gm [<text>] [<player>]:
+	permission: proton.gm
+	description: Changes gamemode
+	permission message: {@em}
+	usage: /gm [gamemode] (player)
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /gm [num] (player)"
+		else if arg 1 is "creative" or "c" or "1":
+			if arg 2 is not set:
+				set player's gamemode to creative
+				send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to sender
+			else:
+				set player-arg's gamemode to creative
+				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Creative{@t}." to sender
+				send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
+		else if arg 1 is "survival" or "s" or "0":
+			if arg 2 is not set:
+				set player's gamemode to survival
+				send "{@p} Your gamemode has been updated to {@h}Survival{@t}." to sender
+			else:
+				set player-arg's gamemode to survival
+				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Survival{@t}." to sender
+				send "{@p} Your gamemode has been updated to {@h}Survival{@t}." to player-arg
+		else if arg 1 is "adventure" or "a" or "2":
+			if arg 2 is not set:
+				set player's gamemode to adventure
+				send "{@p} Your gamemode has been updated to {@h}Adventure{@t}." to sender
+			else:
+				set player-arg's gamemode to adventure
+				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Adventure{@t}." to sender
+				send "{@p} Your gamemode has been updated to {@h}Adventure{@t}." to player-arg
+		else if arg 1 is "spectator" or "sp" or "3" or "spec":
+			if arg 2 is not set:
+				set player's gamemode to spectator
+				send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to sender
+			else:
+				set player-arg's gamemode to spectator
+				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Spectator{@t}." to sender
+				send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to player-arg
+		else:
+			send "&c&oInvaild Argument."
+			send "&cUsage: /gm [num] (player)"
+command /fly [<player>]:
+	permission: proton.fly
+	description: Toggles flight
+	permission message: {@em}
+	usage: /fly (player)
+	trigger:
+		if arg 1 is not set:
+			if {proton.fly::%sender%} is true:
+				delete {proton.fly::%sender%}
+				set sender's fly mode to false
+				send "{@p} Flight mode {@h}disabled{@t}."
+			else:
+				set {proton.fly::%sender%} to true
+				set sender's fly mode to true
+				send "{@p} Flight mode {@h}enabled{@t}."
+		else:
+			if {proton.fly::%player-arg%} is true:
+				delete {proton.fly::%player-arg%}
+				set player-arg's fly mode to false
+				send "{@p} Flight mode {@h}disabled{@t}." to player-arg
+				send "{@p} {@h}%player-arg%{@t}'s flight mode was {@h}disabled{@t}." to sender
+			else:
+				set {proton.fly::%player-arg%} to true
+				set player-arg's fly mode to true
+				send "{@p} Flight mode {@h}enabled{@t}." to player-arg
+				send "{@p} {@h}%player-arg%{@t}'s flight mode was {@h}enabled{@t}." to sender
+command /tp [<player>] [<player>]:
+	permission: proton.tp
+	description: Teleports to player
+	permission message: {@em}
+	usage: /tp [player] (player)
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /tp [player] (player)"
+		else if arg 1 is set:
+			if arg 2 is not set:
+				teleport sender to arg-1
+				send "{@p} Teleported to {@h}%arg-1%{@t}." to sender
+			else:
+				teleport arg-1 to arg-2
+				send "{@p} Teleported {@h}%arg-1%{@t}" to sender
+				send "{@p} Teleported to {@h}%sender%{@t}." to arg-1
+command /tphere [<player>]:
+	permission: proton.tphere
+	description: Teleports a player to sender
+	permission message: {@em}
+	usage: /tphere [player]
+	aliases: /s
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /tphere [player]"
+		else if arg 1 is set:
+			teleport arg-1 to sender
+			send "{@p} Teleported {@h}%arg-1%{@t} to you." to sender
+			send "{@p} Teleported to {@h}%sender%{@t}." to arg-1
+command /tpcoords [<integer>] [<integer>] [<integer>]:
+	permission: proton.tpcoords
+	aliases: /tppos
+	permission message: {@em}
+	usage: /tpcoords [x] [y] [z]
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /tpcoords [x] [y] [z]"
+		else if arg 1 is set:
+			if arg 2 is set:
+				if arg 3 is set:
+					set {_world} to sender's world
+					set {_loc} to location(arg-1, arg-2, arg-3, {_world})
+					teleport sender to {_loc}
+					send "{@p} Teleported to {@h}%arg-1%, %arg-2%, %arg-3%{@t}."
+				else:
+					send "&c&oInvaild Argument."
+					send "&cUsage: /tpcoords [x] [y] [z]"
+			else:
+				send "&c&oInvaild Argument."
+				send "&cUsage: /tpcoords [x] [y] [z]"
+command /sethome:
+	permission: proton.sethome
+	permission message: {@em}
+	usage: /sethome
+	trigger:
+		set {proton.home::%sender's uuid%} to sender's location
+		set {_x} to sender's x-coordinate
+		set {_y} to sender's y-coordinate
+		set {_z} to sender's z-coordinate
+		send "{@p} Home set at {@h}%{_x}%, %{_y}%, %{_z}%{@t}."
+command /home:
+	permission: proton.home
+	permission message: {@em}
+	usage: /home
+	trigger:
+		if {proton.home::%sender's uuid%} is set:
+			teleport sender to {proton.home::%sender's uuid%}
+			send "{@p} Teleported to your home location."
+
+		else:
+			send "&c&oYou do not have a home set."
+			send "&cUsage: /sethome"
+command /setspawn:
+	permission: proton.setspawn
+	permission message: {@em}
+	usage: /setspawn
+	trigger:
+		if {proton.spawn} is set:
+			set {proton.spawn} to sender's location
+			set {_x} to sender's x-coordinate
+			set {_y} to sender's y-coordinate
+			set {_z} to sender's z-coordinate
+			send "{@p} Spawn location set to {@h}%{_x}%, %{_y}%, %{_z}%{@t}."
+
+		else:
+			send "&c&oYou do not have a home set."
+			if sender has permission "proton.sethome":
+				send "&cUsage: /sethome"
+command /spawn [<player>]:
+	permission: proton.spawn
+	permission message: {@em}
+	usage: /spawn (player)
+	trigger:
+		if {proton.spawn} is set:
+			if arg 1 is set:
+				teleport arg-1 to {proton.spawn}
+				send "{@p} Teleported {@h}%arg-1%{@t} to spawn." to sender
+				send "{@p} Teleported to spawn." to arg-1
+			else:
+				teleport sender to {proton.spawn}
+				send "{@p} Teleported to spawn." to sender
+		else:
+			send "&c&oSpawn is not set."
+			if sender has permission "proton.setspawn":
+				send "&cUsage: /setspawn"
+command /vanish [<player>]:
+	permission: proton.vanish
+	permission message: {@em}
+	usage: /vanish (player)
+	trigger:
+		if arg 1 is not set:
+			if {proton.visibility::%player%} is true:
+				delete {proton.visibility::%player%}
+				remove invisibility from player
+				send "{@p} You have been reappeared." to player
+
+			else:
+				set {proton.visibility::%player%} to true
+				apply invisibility 2 to the player for 9999 days
+				send "{@p} You have been vanished." to player
+
+		else if arg 1 is set:
+			if {proton.visibility::%arg-1%} is true:
+				delete {proton.visibility::%arg-1%}
+				remove invisibility from arg-1
+				send "{@p} You have been reappeared." to arg-1
+				send "{@p} {@h}%arg-1%{@t} has been reappeared." to sender
+			else:
+				set {proton.visibility::%arg-1%} to true
+				apply invisibility 2 to the arg-1 for 9999 days
+				send "{@p} You have been vanished." to arg-1
+				send "{@p} {@h}%arg-1%{@t} has been vanished." to sender
+on join:
+	delete {proton.visibility::%event-player%}
+	delete {proton.fly::%event-player%}
+	remove invisibility from the event-player
