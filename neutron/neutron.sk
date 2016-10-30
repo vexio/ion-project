@@ -1,0 +1,149 @@
+options:
+#
+# For more information on customization & configuration settings,
+# visit https://www.vehicola.github.io/neutron
+#
+	p: &4 ⦿&f
+	t: &f
+	h: &7
+	em: &cInvaild Permissions
+	chatSpacer: &8»
+	chatColor: &f
+command /neutron [<text>]:
+	description: Shows all commands in Proton
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /neutron [help|reload]"
+		if arg 1 is "help":
+			send "&4&m---+---&r &cNeutron &4&m---+---&r"
+			send "&o[] = required &7❘&r&o () = optional"
+			send "&7/chat create [groupName] &8❘&f Creates a chat group"
+			send "&7/chat remove [groupName] &8❘&f Deletes a chat group"
+			send "&7/chat prefix [groupName] [prefix] &8❘&f Creates a chat group prefix"
+			send "&7/chat suffix [groupName] [suffix] &8❘&f Creates a chat group suffix"
+			send "&7/chat setPlayer [groupName] [player] &8❘&f Adds a player to the chat group"
+		else if arg 1 is "reload" or "rl":
+			if sender has permission "neutron.reload":
+				send "{@p} Reloading {@h}Neutron{@t}..."
+				wait 1 second
+				if sender is op:
+					player command "/sk reload %skript%"
+				else:
+					console command "/sk reload %skript%"
+					wait 3 seconds
+					send "{@p} Successfully reloaded {@h}Neutron{@t}."
+		else if arg 1 is set:
+			send "&c&oInvaild Argument."
+			send "&cUsage: /neutron [help|reload]"
+command /chat [<text>] [<text>] [<text>]:
+	permission: neutron.editChat
+	permission message: {@em}
+	description: Edit Chat Groups
+	usage: /neutron help
+	trigger:
+		if arg 1 is not set:
+			player command "/neutron help"
+		else if arg 1 is "create":
+			if arg 2 is not set:
+				send "&c&oInvalid Argument."
+				send "&cUsage: /chat create [groupName]"
+			else if arg 2 is set:
+				if {neutron.groups::%arg-2%} is true:
+					send "&c&oGroup already exists."
+				else:
+					send "{@p} Group {@h}%arg-2%{@t} created."
+					set {neutron.groups::%arg-2%} to true
+		else if arg 1 is "remove" or "delete":
+			if arg 2 is not set:
+				send "&c&oInvalid Argument."
+				send "&cUsage: /chat remove [groupName]"
+			else if arg 2 is set:
+				if {neutron.groups::%arg-2%} is true:
+					send "{@p} Group {@h}%arg-2%{@t} deleted."
+					remove arg-2 from {neutron.groups::*}
+					delete {neutron.groupPrefix::%arg-2%}
+					delete {neutron.groupSuffix::%arg-2%}
+					delete {neutron.groups::%arg-2%}
+				else:
+					send "&c&oGroup does not exist."
+		else if arg 1 is "info":
+			if arg 2 is set:
+				if {neutron.groups::%arg-2%} is true:
+					send "{@p} Chat Group: {@h}%arg-2%{@t}"
+					send "   &7• {@t}Prefix:&r %colored {neutron.groupPrefix::%arg-2%}%"
+					send "   &7• {@t}Suffix:&r %colored {neutron.groupSuffix::%arg-2%}%"
+					send "   &7• {@t}Players: &a%{neutron.group.%arg-2%::*}%"
+				else:
+					send "&c&oGroup does not exist."
+			else:
+				send "&c&oInvaild Argument."
+				send "&cUsage: /chat info [groupName]"
+		else if arg 1 is "prefix":
+			if arg 2 is set:
+				if arg 3 is set:
+					if {neutron.groups::%arg-2%} is true:
+						send "{@p} Group {@h}%arg-2%{@t}'s prefix has been set to &r%arg-3%{@t}."
+						set {neutron.groupPrefix::%arg-2%} to "%arg-3%"
+					else:
+						send "&c&oGroup does not exist."
+				else:
+					send "&c&oInvaild Argument."
+					send "&cUsage: /chat prefix %arg-2% [prefix]"
+			else:
+				send "&c&oInvaild Argument."
+				send "&cUsage: /chat prefix [groupName] [prefix]"
+		else if arg 1 is "suffix":
+			if arg 2 is set:
+				if arg 3 is set:
+					if {neutron.groups::%arg-2%} is true:
+						send "{@p} Group {@h}%arg-2%{@t}'s suffix has been set to &r%arg-3%{@t}."
+						set {neutron.groupSuffix::%arg-2%} to "%arg-3%"
+					else:
+						send "&c&oGroup does not exist."
+				else:
+					send "&c&oInvaild Argument."
+					send "&cUsage: /chat suffix %arg-2% [prefix]"
+			else:
+				send "&c&oInvaild Argument."
+				send "&cUsage: /chat suffix [groupName] [prefix]"
+		else if arg 1 is "setPlayer" or "addPlayer":
+			if arg 2 is set:
+				if arg 3 is set:
+					if {neutron.groups::%arg-2%} is true:
+						set {_player} to arg-3 parsed as a player
+						set {neutron.group::%{_player}%} to "%arg-2%"
+						add {_player} to {neutron.group.%arg-2%::*}
+						#if "{@permissionManager}" is "pex":
+						#	console command "/pex user %{_player}% add neutron.group.%arg-2%"
+						#else if "{@permissionManager}" is "essentials" or "groupManager":
+						#	console command "/manuaddp %{_player}% neutron.group.%arg-2%"
+						send "{@p} {@h}%{_player}%{@t}'s chat group has been set to {@h}%arg-2%{@t}."
+					else:
+						send "&c&oGroup does not exist."
+				else:
+					send "&c&oInvaild Argument."
+					send "&cUsage: /chat setPlayer %arg-2% [player]"
+			else:
+				send "&c&oInvaild Argument."
+				send "&cUsage: /chat setPlayer [groupName] [player]"
+		else:
+			send "&c&oInvaild Argument."
+			send "&cUsage: /neutron help"
+		stop
+on chat:
+	cancel event
+	if {neutron.group::%event-player%} is set:
+		#if {neutron.groups::*} contains "%{neutron.group::%event-player%}%":
+		if {neutron.groups::*} is true:
+			set {_group} to "%{neutron.group::%event-player%}%"
+			if "%{neutron.groupPrefix::%{_group}%}%" is not "<none>":
+				if "%{neutron.groupSuffix::%{_group}%}%" is not "<none>":
+					broadcast "%colored {neutron.groupPrefix::%{_group}%}% %name of player% %colored {neutron.groupSuffix::%{_group}%}% {@chatSpacer} {@chatColor}%message%"
+				else:
+					broadcast "%colored {neutron.groupPrefix::%{_group}%}% %name of player% {@chatSpacer} {@chatColor}%message%"
+			else:
+				broadcast "&f%name of player% {@chatSpacer} {@chatColor}%message%"
+		else:
+			broadcast "&f%name of player% {@chatSpacer} {@chatColor}%message%"
+	else:
+		broadcast "&f%name of player% {@chatSpacer} {@chatColor}%message%"
