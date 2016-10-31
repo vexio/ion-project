@@ -36,7 +36,7 @@ command /neutron [<text>]:
 			send "&c&oInvaild Argument."
 			send "&cUsage: /neutron [help|reload]"
 command /chat [<text>] [<text>] [<text>]:
-	permission: neutron.editChat
+	permission: neutron.chat
 	permission message: {@em}
 	description: Edit Chat Groups
 	usage: /neutron help
