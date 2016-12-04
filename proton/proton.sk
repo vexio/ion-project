@@ -3,6 +3,8 @@ options:
 	t: &f
 	h: &7
 	em: &cInvaild Permissions
+	joinMessage: &2&l»&r &a
+	quitMessage: &4&l«&r &c
 command /proton [<text>]:
 	description: Shows all commands in Proton
 	trigger:
@@ -31,9 +33,6 @@ command /proton [<text>]:
 					console command "/sk reload %skript%"
 					wait 3 seconds
 					send "{@p} Successfully reloaded {@h}Proton{@t}."
-		else:
-			send "&c&oInvaild Argument."
-			send "&cUsage: /proton [help]"
 command /gm [<text>] [<player>]:
 	permission: proton.gm
 	description: Changes gamemode
@@ -239,3 +238,60 @@ on join:
 	delete {proton.visibility::%event-player%}
 	delete {proton.fly::%event-player%}
 	remove invisibility from the event-player
+
+command /gmc [<player>]:
+	permission: proton.gm
+	permission message: {@em}
+	usage: &c/gmc (player)
+	description: Changes gamemode to Creative
+	trigger:
+		if arg 1 is not set:
+			set player's gamemode to creative
+			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to sender
+		else:
+			set player-arg's gamemode to creative
+			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
+			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Creative{@t}" to sender
+command /gms [<player>]:
+	permission: proton.gm
+	permission message: {@em}
+	usage: &c/gms (player)
+	description: Changes gamemode to Survival
+	trigger:
+		if arg 1 is not set:
+			set player's gamemode to survival
+			send "{@p} Your gamemode has been updated to {@h}Survival{@t}." to sender
+		else:
+			set player-arg's gamemode to survival
+			send "{@p} Your gamemode has been updated to {@h}Survival{@t}." to player-arg
+			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Survival{@t}" to sender
+command /gma [<player>]:
+	permission: proton.gm
+	permission message: {@em}
+	usage: &c/gma (player)
+	description: Changes gamemode to Adventure
+	trigger:
+		if arg 1 is not set:
+			set player's gamemode to Adventure
+			send "{@p} Your gamemode has been updated to {@h}Adventure{@t}." to sender
+		else:
+			set player-arg's gamemode to Adventure
+			send "{@p} Your gamemode has been updated to {@h}Adventure{@t}." to player-arg
+			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Adventure{@t}" to sender
+command /gmsp [<player>]:
+	permission: proton.gm
+	permission message: {@em}
+	usage: &c/gmsp (player)
+	description: Changes gamemode to Spectator
+	trigger:
+		if arg 1 is not set:
+			set player's gamemode to Spectator
+			send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to sender
+		else:
+			set player-arg's gamemode to Spectator
+			send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to player-arg
+			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Spectator{@t}" to sender
+on join:
+	set join message to "{@joinMessage}%name of player%"
+on quit:
+	set leave message to "{@quitMessage}%name of player%"
