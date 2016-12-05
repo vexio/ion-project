@@ -1,10 +1,12 @@
 options:
-	p: &6 ⦿&f
+	p: &6 ⦿&f #
 	t: &f
 	h: &7
 	em: &cInvaild Permissions
 	joinMessage: &2&l»&r &a
 	quitMessage: &4&l«&r &c
+	animals: pig, sheep, cow, horse, chicken, wolf, ocelot, bat, mooshroom, rabbit, squid, villager, donkey
+	monsters: cave spider, enderman, spider, zombie pigman, blaze, creeper, guardian, endermite, ghast, magma cube, silverfish, skeleton, slime, witch, wither skeleton, zombie
 command /proton [<text>]:
 	description: Shows all commands in Proton
 	trigger:
@@ -365,3 +367,21 @@ command /speed [<player>] [<number>]:
 				send "&cUsage: /speed %arg-1% [0-10]"
 		else:
 			send "&cUsage: /speed [player] [0-10]"
+command /butcher [<text>]:
+	permission: proton.butcher
+	permission message: {@em}
+	usage: &c/butcher [animals|monsters|all:*]
+	description: Deletes entites
+	trigger:
+		if arg 1 is "animals":
+			kill all {@animals}
+			send "{@p} Killed all {@h}Animals{@t}."
+		else if arg 1 is "monsters":
+			kill all {@monsters}
+			send "{@p} Killed all {@h}Monsters{@t}."
+		else if arg 1 is "all" or "*":
+			kill all {@animals}
+			kill all {@monsters}
+			send "{@p} Killed all {@h}entities{@t}."
+		else:
+			send "&cUsage: /butcher [animals|monsters|all:*]"
