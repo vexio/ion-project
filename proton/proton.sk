@@ -5,8 +5,8 @@ options:
 	em: &cInvaild Permissions
 	joinMessage: &2&l»&r &a
 	quitMessage: &4&l«&r &c
-	animals: pig, sheep, cow, horse, chicken, wolf, ocelot, bat, mooshroom, rabbit, squid, villager, donkey
-	monsters: cave spider, enderman, spider, zombie pigman, blaze, creeper, guardian, endermite, ghast, magma cube, silverfish, skeleton, slime, witch, wither skeleton, zombie
+	animals: pig and sheep and cow and horse and chicken and wolf and ocelot and bat and mooshroom and rabbit and squid and villager and donkey
+	monsters: cave spider and enderman and spider and zombie pigman and blaze and creeper and guardian and endermite and ghast and magma cube and silverfish and skeleton and slime and witch and wither skeleton and zombie
 command /proton [<text>]:
 	description: Shows all commands in Proton
 	trigger:
@@ -367,21 +367,104 @@ command /speed [<player>] [<number>]:
 				send "&cUsage: /speed %arg-1% [0-10]"
 		else:
 			send "&cUsage: /speed [player] [0-10]"
-command /butcher [<text>]:
-	permission: proton.butcher
+#command /butcher [<text>]:
+#	permission: proton.butcher
+#	permission message: {@em}
+#	usage: &c/butcher [animals|monsters|all:*]
+#	description: Deletes entites
+#	trigger:
+#		if arg 1 is "animals":
+#			kill all {@animals} in the sender's world
+#			send "{@p} Killed all {@h}Animals{@t}."
+#		else if arg 1 is "monsters":
+#			kill all {@monsters} in the sender's world
+#			send "{@p} Killed all {@h}Monsters{@t}."
+#		else if arg 1 is "all" or "*":
+#			kill all {@animals} in the sender's world
+#			kill all {@monsters} in the sender's world
+#			send "{@p} Killed all {@h}entities{@t}."
+#		else:
+#			send "&cUsage: /butcher [animals|monsters|all:*]"
+command /blacklist [<text>] [<offline player>]:
+	permission: proton.blacklist
 	permission message: {@em}
-	usage: &c/butcher [animals|monsters|all:*]
-	description: Deletes entites
+	usage: &c/blacklist [add|remove|list|reset] (player)
+	description: Blacklists people to the server
 	trigger:
-		if arg 1 is "animals":
-			kill all {@animals}
-			send "{@p} Killed all {@h}Animals{@t}."
-		else if arg 1 is "monsters":
-			kill all {@monsters}
-			send "{@p} Killed all {@h}Monsters{@t}."
-		else if arg 1 is "all" or "*":
-			kill all {@animals}
-			kill all {@monsters}
-			send "{@p} Killed all {@h}entities{@t}."
+		if arg 1 is "add" or "+":
+			if arg 2 is set:
+				send "{@p} {@h}%offline player-arg%{@t} has been added to the &8blacklist{@t}."
+				add "%offline player-arg%" to {proton.blacklist::*}
+			else:
+				send "&c&oSpecify a player"
+				send "&cUsage: /blacklist %arg-1% (player)"
+		else if arg 1 is "remove" or "delete" or "-":
+			if arg 2 is set:
+				if "%{proton.blacklist::*}%" contains "%offline player-arg%":
+					send "{@p} {@h}%offline player-arg%{@t} has been removed from the &8blacklist{@t}."
+					remove "%offline player-arg%" from {proton.blacklist::*}
+				else:
+					send "&c&oThat player is not on the blacklist"
+					send "&cUsage: /blacklist %arg-1% &m%arg-2%"
+			else:
+				send "&c&oSpecify a player"
+				send "&cUsage: /blacklist %arg-1% (player)"
+		else if arg 1 is "list":
+			send "{@p} &8Blacklist&7:"
+			loop {proton.blacklist::*}:
+				send "  &7- &a%loop-value%"
+			stop
+		else if arg 1 is "reset":
+			if sender has permission "proton.blacklist.reset":
+				delete {proton.blacklist::*}
+				send "{@p} &8Blacklist{@t} cleared."
+			else:
+				send "{@em}"
 		else:
-			send "&cUsage: /butcher [animals|monsters|all:*]"
+			send "&cUsage: /blacklist [add|remove|list|reset] (player)"
+		stop
+on connect:
+	if "%{proton.whitelist::*}%" doesn't contain "%event-player%":
+		kick event-player due to "&7You are not &fWhitelisted &7on this server."
+		stop
+	else if "%{proton.blacklist::*}%" contains "%event-player%":
+		kick event-player due to "&7You are &8Blacklisted&7 on this server."
+		stop
+command /whitelist [<text>] [<offline player>]:
+	permission: proton.whitelist
+	permission message: {@em}
+	usage: &c/whitelist [add|remove|list|reset] (player)
+	description: Whitelists people to the server
+	trigger:
+		if arg 1 is "add" or "+":
+			if arg 2 is set:
+				send "{@p} {@h}%offline player-arg%{@t} has been added to the &7Whitelist{@t}."
+				add "%offline player-arg%" to {proton.whitelist::*}
+			else:
+				send "&c&oSpecify a player"
+				send "&cUsage: /whitelist %arg-1% (player)"
+		else if arg 1 is "remove" or "delete" or "-":
+			if arg 2 is set:
+				if "%{proton.whitelist::*}%" contains "%offline player-arg%":
+					send "{@p} {@h}%offline player-arg%{@t} has been removed from the &7Whitelist{@t}."
+					remove "%offline player-arg%" from {proton.whitelist::*}
+				else:
+					send "&c&oThat player is not on the whitelist"
+					send "&cUsage: /whitelist %arg-1% &m%arg-2%"
+			else:
+				send "&c&oSpecify a player"
+				send "&cUsage: /whitelist %arg-1% (player)"
+		else if arg 1 is "list":
+			send "{@p} &7Whitelist&7:"
+			loop {proton.whitelist::*}:
+				send "  &7- &a%loop-value%"
+			stop
+		else if arg 1 is "reset":
+			if sender has permission "proton.whitelist.reset":
+				delete {proton.whitelist::*}
+				send "{@p} &7Whitelist{@t} cleared."
+			else:
+				send "{@em}"
+		else:
+			send "&cUsage: /whitelist [add|remove|list|reset] (player)"
+		stop
