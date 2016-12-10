@@ -1,7 +1,7 @@
 options:
 #
 # For more information on customization & configuration settings,
-# visit https://www.vehicola.github.io/neutron
+# visit https://www.vehicola.github.io/ion-project
 #
 	p: &4 ⦿&f
 	t: &f
