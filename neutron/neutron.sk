@@ -6,7 +6,7 @@ options:
 	p: &4 ⦿&f
 	t: &f
 	h: &7
-	em: &cInvaild Permissions
+	em: &cInvalid Permissions
 	chatSpacer: &8»
 	chatColor: &f
 command /neutron [<text>]:
@@ -33,7 +33,7 @@ command /neutron [<text>]:
 					wait 3 seconds
 					send "{@p} Successfully reloaded {@h}Neutron{@t}."
 		else if arg 1 is set:
-			send "&c&oInvaild Argument."
+			send "&c&oInvalid Argument."
 			send "&cUsage: /neutron [help|reload]"
 command /chat [<text>] [<text>] [<text>]:
 	permission: neutron.chat
@@ -76,7 +76,7 @@ command /chat [<text>] [<text>] [<text>]:
 				else:
 					send "&c&oGroup does not exist."
 			else:
-				send "&c&oInvaild Argument."
+				send "&c&oInvalid Argument."
 				send "&cUsage: /chat info [groupName]"
 		else if arg 1 is "prefix":
 			if arg 2 is set:
@@ -87,10 +87,10 @@ command /chat [<text>] [<text>] [<text>]:
 					else:
 						send "&c&oGroup does not exist."
 				else:
-					send "&c&oInvaild Argument."
+					send "&c&oInvalid Argument."
 					send "&cUsage: /chat prefix %arg-2% [prefix]"
 			else:
-				send "&c&oInvaild Argument."
+				send "&c&oInvalid Argument."
 				send "&cUsage: /chat prefix [groupName] [prefix]"
 		else if arg 1 is "suffix":
 			if arg 2 is set:
@@ -101,10 +101,10 @@ command /chat [<text>] [<text>] [<text>]:
 					else:
 						send "&c&oGroup does not exist."
 				else:
-					send "&c&oInvaild Argument."
+					send "&c&oInvalid Argument."
 					send "&cUsage: /chat suffix %arg-2% [prefix]"
 			else:
-				send "&c&oInvaild Argument."
+				send "&c&oInvalid Argument."
 				send "&cUsage: /chat suffix [groupName] [prefix]"
 		else if arg 1 is "setPlayer" or "addPlayer":
 			if arg 2 is set:
@@ -121,13 +121,13 @@ command /chat [<text>] [<text>] [<text>]:
 					else:
 						send "&c&oGroup does not exist."
 				else:
-					send "&c&oInvaild Argument."
+					send "&c&oInvalid Argument."
 					send "&cUsage: /chat setPlayer %arg-2% [player]"
 			else:
-				send "&c&oInvaild Argument."
+				send "&c&oInvalid Argument."
 				send "&cUsage: /chat setPlayer [groupName] [player]"
 		else:
-			send "&c&oInvaild Argument."
+			send "&c&oInvalid Argument."
 			send "&cUsage: /neutron help"
 		stop
 on chat:
