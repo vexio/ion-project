@@ -2,7 +2,7 @@ options:
 	p: &6 ⦿&f #
 	t: &f
 	h: &7
-	em: &cInvaild Permissions
+	em: &cInvalid Permissions
 	joinMessage: &2&l»&r &a
 	quitMessage: &4&l«&r &c
 	animals: pig and sheep and cow and horse and chicken and wolf and ocelot and bat and mooshroom and rabbit and squid and villager and donkey
@@ -76,7 +76,7 @@ command /gm [<text>] [<player>]:
 				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Spectator{@t}." to sender
 				send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to player-arg
 		else:
-			send "&c&oInvaild Argument."
+			send "&c&oInvalid Argument."
 			send "&cUsage: /gm [num] (player)"
 command /fly [<player>]:
 	permission: proton.fly
@@ -149,10 +149,10 @@ command /tpcoords [<integer>] [<integer>] [<integer>]:
 					teleport sender to {_loc}
 					send "{@p} Teleported to {@h}%arg-1%, %arg-2%, %arg-3%{@t}."
 				else:
-					send "&c&oInvaild Argument."
+					send "&c&oInvalid Argument."
 					send "&cUsage: /tpcoords [x] [y] [z]"
 			else:
-				send "&c&oInvaild Argument."
+				send "&c&oInvalid Argument."
 				send "&cUsage: /tpcoords [x] [y] [z]"
 command /sethome:
 	permission: proton.sethome
