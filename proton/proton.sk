@@ -468,3 +468,33 @@ command /whitelist [<text>] [<offline player>]:
 		else:
 			send "&cUsage: /whitelist [add|remove|list|reset] (player)"
 		stop
+command /time [<text>] [<text>]:
+	permission: proton.time
+	permission message: {@em}
+	usage: &c/time [set] [day|night|noon|midnight|...]
+	description: Sets the time of day
+	trigger:
+		if arg 1 is "set":
+			if arg 2 is "day":
+				set time to 9:00am
+				send "{@p} Time set to {@h}Day{@t}, or &a9:00am{@t}."
+			else if arg 2 is "noon":
+				set time to 12:00pm
+				send "{@p} Time set to {@h}Noon{@t}, or &a12:00pm{@t}."
+			else if arg 2 is "night":
+				set time to 9:00pm
+				send "{@p} Time set to {@h}Night{@t}, or &a9:00pm{@t}."
+			else if arg 2 is "midnight":
+				set time to 12:00am
+				send "{@p} Time set to {@h}Midnight{@t}, or &a12:00am{@t}."
+			else if arg 2 is "dawn":
+				set time to 6:00am
+				send "{@p} Time set to {@h}Dawn{@t}, or &a6:00am{@t}."
+			else if arg 2 is "dusk":
+				set time to 7:00pm
+				send "{@p} Time set to {@h}Dusk{@t}, or &a7:00am{@t}."
+			else:
+				send "&c&oTime does not exist."
+				send "&cUsage: &c/time %arg-1% &m%arg-2%"
+		else:
+			send "&cUsage: /time [set] [day|night|noon|midnight|...]"
