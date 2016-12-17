@@ -1,0 +1,62 @@
+options:
+	p: &a ⦿&f                 #prefix
+	t: &f                      #default text color
+	h: &7                      #highlighted text color
+	em: &cInvalid Permissions  #permission error
+command /electron [<text>]:
+	description: Shows all commands for electron
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /electron [help]"
+		else if arg 1 is "help":
+			send "&2&m---+---&r &aProton &2&m---+---&r"
+			send "&o[] = required &7❘&r&o () = optional"
+			send "&7/balance (player) &8❘&f Shows balance"
+			send "&7/pay [amount] [player] &8❘&f Sends money to a player"
+			send "&7/request [amount] [player] &8❘&f Requests money from a player"
+			send "&7/economy [add|remove|reset] [amount] [player|*] &8❘&f Change the economy"
+command /balance [<offline player]:
+	permission: electron.balance
+	description: Shows balance
+	permission message: {@em}
+	usage: /balance (player)
+	aliases: /bal, /money
+	trigger:
+		if arg 1 is not set:
+			send " {@p} You have {@h}$%{electron.bal::%sender%}%{@t}."
+		else if arg 1 is set:
+			if arg 1 = sender:
+				send " {@p} You have {@h}$%{electron.bal::%sender%}%{@t}."
+			else:
+				send " {@p} {@h}%offline player-arg%{@t} has {@h}$%{electron.bal::%offline player-arg%}%{@t}."
+command /pay [<integer>] [<offline player-arg>]:
+	permission: electron.pay
+	description: Sends money to a player
+	permission message: {@em}
+	usage: /pay [amount] [player]
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				if arg 1 is greater than 1:
+					if {electron.bal::%sender%} is greater than or equal to arg-1:
+						subtract arg-1 from {electron.bal::%sender%}
+						add arg-1 to {electron.bal::%offline player-arg%}
+						send " {@p} You sent {@h}$%arg-1%{@t} to {@h}%offline player-arg%{@t}." to sender
+						send " {@p} You recieved {@h}$%arg-1%{@t} from {@h}%sender%{@t}." to offline player-arg
+					else:
+						send "&c&oYou don't have enough money."
+						send "&cUsage: /pay &m%arg-1%&r&c %offline player-arg%"
+				else:
+					send "&c&oYou cannot send negative quantities."
+					send "&cUsage: /pay &m%arg-1%&r&c %offline player-arg%"
+			else:
+				send "&cUsage: /pay %arg-1% [player]"
+		else:
+			send "&cUsage: /pay [amount] [player]"
+command /request [<integer>] [<player>]:
+	permission: electron.request
+	description: Requests money from a player
+	permission message: {@em}
+	usage: /request [amount] [player]
+	trigger:
+		send "working on it i just got lazy"
