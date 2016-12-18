@@ -10,11 +10,8 @@ command /electron [<text>]:
 			send "&cUsage: /electron [help]"
 		else if arg 1 is "help":
 			send "&2&m---+---&r &aProton &2&m---+---&r"
-			send "&o[] = required &7❘&r&o () = optional"
-			send "&7/balance (player) &8❘&f Shows balance"
-			send "&7/pay [amount] [player] &8❘&f Sends money to a player"
-			send "&7/request [amount] [player] &8❘&f Requests money from a player"
-			send "&7/economy [add|remove|reset] [amount] [player|*] &8❘&f Change the economy"
+			send " &8• &7A List of commands can be found here:"
+			send " &f&nhttps://goo.gl/IbzW41"
 command /balance [<offline player]:
 	permission: electron.balance
 	description: Shows balance
@@ -28,7 +25,10 @@ command /balance [<offline player]:
 			if arg 1 = sender:
 				send " {@p} You have {@h}$%{electron.bal::%sender%}%{@t}."
 			else:
-				send " {@p} {@h}%offline player-arg%{@t} has {@h}$%{electron.bal::%offline player-arg%}%{@t}."
+				if sender has permission "electron.balance.other":
+					send " {@p} {@h}%offline player-arg%{@t} has {@h}$%{electron.bal::%offline player-arg%}%{@t}."
+				else:
+					send "{@em}"
 command /pay [<integer>] [<offline player-arg>]:
 	permission: electron.pay
 	description: Sends money to a player
