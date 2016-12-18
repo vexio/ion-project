@@ -14,17 +14,8 @@ command /proton [<text>]:
 			send "&cUsage: /proton [help]"
 		if arg 1 is "help":
 			send "&6&m---+---&r &eProton &6&m---+---&r"
-			send "&o[] = required &7❘&r&o () = optional"
-			send "&7/gm [num] (player) &8❘&f Changes Gamemode"
-			send "&7/fly (player) &8❘&f Toggles flight"
-			send "&7/tp [player] (player) &8❘&f Teleports to a player"
-			send "&7/tphere [player] &8❘&f Teleports a player to you"
-			send "&7/tpcoords [x] [y] [z] &8❘&f Teleports to set coordinates"
-			send "&7/sethome &8❘&f Sets a home at sender's location"
-			send "&7/home (player) &8❘&f Teleports to player's home"
-			send "&7/setspawn &8❘&f Sets server spawn to sender's location"
-			send "&7/spawn (player) &8❘&f Teleports player to spawn location"
-			send "&7/vanish (player) &8❘&f Vanishes player"
+			send " &8• &7A List of commands can be found here:"
+			send " &f&nhttps://goo.gl/EAFlng"
 		if arg 1 is "reload" or "rl":
 			if sender has permission "proton.reload":
 				send "{@p} Reloading {@h}Proton{@t}..."
@@ -314,16 +305,16 @@ command /top:
 			send "{@p} Teleported to top."
 			stop
 		send "&cYou are already at the top."
-command /speed [<player>] [<number>]:
+command /speed [<number>] [<player>]:
 	permission: proton.speed
 	permission message: {@em}
-	usage: &c/speed [player] [0-10]
+	usage: &c/speed [0-5] (player)
 	description: Changes walk/flight speed
 	trigger:
 		if arg 1 is set:
 			if arg 2 is set:
-				if arg 2 is between 1 and 5:
-					set {_speed} to arg-2 / 5
+				if arg 1 is between 1 and 5:
+					set {_speed} to arg-1 / 5
 					set {_block} to block below player-arg
 					if {_block} is air:
 						if "%player-arg%" = "%sender%":
@@ -343,7 +334,7 @@ command /speed [<player>] [<number>]:
 							send "{@p} {@h}%player-arg%{@t}'s flight speed was set to &a%arg-2%{@t}." to sender
 							send "{@p} {@h}Your{@t} walk speed was set to &a%arg-2%{@t}." to player-arg
 							set the player-arg's walk speed to {_speed}
-				else if arg-2 is less than or equal to 0:
+				else if arg-1 is less than or equal to 0:
 					set {_block} to block below player-arg
 					if {_block} is air:
 						if "%player-arg%" = "%sender%":
@@ -364,9 +355,25 @@ command /speed [<player>] [<number>]:
 							send "{@p} {@h}Your{@t} walk speed was reset." to player-arg
 							set the player-arg's walk speed to 0.2
 			else:
-				send "&cUsage: /speed %arg-1% [0-10]"
+				if arg-1 is between 1 and 5:
+					set {_speed} to arg-1 / 5
+					set {_block} to block below player-arg
+					if {_block} is air:
+						send "{@p} {@h}Your{@t} flight speed was set to &a%arg-2%{@t}."
+						set the player-arg's flight speed to {_speed}
+					else:
+						send "{@p} {@h}Your{@t} walk speed was set to &a%arg-2%{@t}."
+						set the player-arg's walk speed to {_speed}
+				else if arg-1 is less than or equal to 0:
+					set {_block} to block below player-arg
+					if {_block} is air:
+						send "{@p} {@h}Your{@t} flight speed was reset." to player-arg
+						set the player-arg's flight speed to 0.1
+					else:
+						send "{@p} {@h}Your{@t} walk speed was reset." to player-arg
+						set the player-arg's walk speed to 0.2
 		else:
-			send "&cUsage: /speed [player] [0-10]"
+			send "&cUsage: /speed [0-5] (player)"
 #command /butcher [<text>]:
 #	permission: proton.butcher
 #	permission message: {@em}
@@ -420,16 +427,28 @@ command /blacklist [<text>] [<offline player>]:
 				send "{@p} &8Blacklist{@t} cleared."
 			else:
 				send "{@em}"
+		else if arg 1 is "on":
+			set {proton.blacklist} to true
+			send " {@p} Blacklist enabled."
+		else if arg 1 is "off":
+			set {proton.blacklist} to false
+			send " {@p} Blacklist disabled."
 		else:
 			send "&cUsage: /blacklist [add|remove|list|reset] (player)"
 		stop
 on connect:
-	if "%{proton.whitelist::*}%" doesn't contain "%event-player%":
-		kick event-player due to "&7You are not &fWhitelisted &7on this server."
-		stop
-	else if "%{proton.blacklist::*}%" contains "%event-player%":
-		kick event-player due to "&7You are &8Blacklisted&7 on this server."
-		stop
+	if {proton.whitelist} is true:
+		if "%{proton.whitelist::*}%" doesn't contain "%event-player%":
+			kick event-player due to "&7You are not &fWhitelisted &7on this server."
+			stop
+		else if "%{proton.blacklist::*}%" contains "%event-player%":
+			if {proton.blacklist} is true:
+				kick event-player due to "&7You are &8Blacklisted&7 on this server."
+				stop
+	else if {proton.blacklist} is true:
+		if "%{proton.blacklist::*}%" contains "%event-player%":
+			kick event-player due to "&7You are &8Blacklisted&7 on this server."
+			stop
 command /whitelist [<text>] [<offline player>]:
 	permission: proton.whitelist
 	permission message: {@em}
@@ -465,6 +484,12 @@ command /whitelist [<text>] [<offline player>]:
 				send "{@p} &7Whitelist{@t} cleared."
 			else:
 				send "{@em}"
+		else if arg 1 is "on":
+			set {proton.whitelist} to true
+			send " {@p} Whitelist enabled."
+		else if arg 1 is "off":
+			set {proton.whitelist} to false
+			send " {@p} Whitelist disabled."
 		else:
 			send "&cUsage: /whitelist [add|remove|list|reset] (player)"
 		stop
