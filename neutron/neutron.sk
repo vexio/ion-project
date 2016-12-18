@@ -16,12 +16,8 @@ command /neutron [<text>]:
 			send "&cUsage: /neutron [help|reload]"
 		if arg 1 is "help":
 			send "&4&m---+---&r &cNeutron &4&m---+---&r"
-			send "&o[] = required &7❘&r&o () = optional"
-			send "&7/chat create [groupName] &8❘&f Creates a chat group"
-			send "&7/chat remove [groupName] &8❘&f Deletes a chat group"
-			send "&7/chat prefix [groupName] [prefix] &8❘&f Creates a chat group prefix"
-			send "&7/chat suffix [groupName] [suffix] &8❘&f Creates a chat group suffix"
-			send "&7/chat setPlayer [groupName] [player] &8❘&f Adds a player to the chat group"
+			send " &8• &7A List of commands can be found here:"
+			send " &f&nhttps://goo.gl/7wmVnx"
 		else if arg 1 is "reload" or "rl":
 			if sender has permission "neutron.reload":
 				send "{@p} Reloading {@h}Neutron{@t}..."
