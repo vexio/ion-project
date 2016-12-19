@@ -16,16 +16,16 @@ command /proton [<text>]:
 			send "&6&m---+---&r &eProton &6&m---+---&r"
 			send " &8• &7A List of commands can be found here:"
 			send " &f&nhttps://goo.gl/EAFlng"
-		if arg 1 is "reload" or "rl":
-			if sender has permission "proton.reload":
-				send "{@p} Reloading {@h}Proton{@t}..."
-				wait 1 second
-				if sender is op:
-					player command "/sk reload %skript%"
-				else:
-					console command "/sk reload %skript%"
-					wait 3 seconds
-					send "{@p} Successfully reloaded {@h}Proton{@t}."
+#		if arg 1 is "reload" or "rl":
+#			if sender has permission "proton.reload":
+#				send "{@p} Reloading {@h}Proton{@t}..."
+#				wait 1 second
+#				if sender is op:
+#					player command "/sk reload %skript%"
+#				else:
+#					console command "/sk reload %skript%"
+#					wait 3 seconds
+#					send "{@p} Successfully reloaded {@h}Proton{@t}."
 command /gm [<text>] [<player>]:
 	permission: proton.gm
 	description: Changes gamemode
@@ -429,10 +429,10 @@ command /blacklist [<text>] [<offline player>]:
 				send "{@em}"
 		else if arg 1 is "on":
 			set {proton.blacklist} to true
-			send " {@p} Blacklist enabled."
+			send "{@p} Blacklist enabled."
 		else if arg 1 is "off":
 			set {proton.blacklist} to false
-			send " {@p} Blacklist disabled."
+			send "{@p} Blacklist disabled."
 		else:
 			send "&cUsage: /blacklist [add|remove|list|reset] (player)"
 		stop
@@ -486,10 +486,10 @@ command /whitelist [<text>] [<offline player>]:
 				send "{@em}"
 		else if arg 1 is "on":
 			set {proton.whitelist} to true
-			send " {@p} Whitelist enabled."
+			send "{@p} Whitelist enabled."
 		else if arg 1 is "off":
 			set {proton.whitelist} to false
-			send " {@p} Whitelist disabled."
+			send "{@p} Whitelist disabled."
 		else:
 			send "&cUsage: /whitelist [add|remove|list|reset] (player)"
 		stop
