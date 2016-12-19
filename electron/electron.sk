@@ -12,7 +12,7 @@ command /electron [<text>]:
 			send "&2&m---+---&r &aProton &2&m---+---&r"
 			send " &8• &7A List of commands can be found here:"
 			send " &f&nhttps://goo.gl/IbzW41"
-command /balance [<offline player]:
+command /balance [<offline player>]:
 	permission: electron.balance
 	description: Shows balance
 	permission message: {@em}
@@ -20,16 +20,16 @@ command /balance [<offline player]:
 	aliases: /bal, /money
 	trigger:
 		if arg 1 is not set:
-			send " {@p} You have {@h}$%{electron.bal::%sender%}%{@t}."
+			send "{@p} You have {@h}$%{electron.bal::%sender%}%{@t}."
 		else if arg 1 is set:
 			if arg 1 = sender:
-				send " {@p} You have {@h}$%{electron.bal::%sender%}%{@t}."
+				send "{@p} You have {@h}$%{electron.bal::%sender%}%{@t}."
 			else:
 				if sender has permission "electron.balance.other":
-					send " {@p} {@h}%offline player-arg%{@t} has {@h}$%{electron.bal::%offline player-arg%}%{@t}."
+					send "{@p} {@h}%offline player-arg%{@t} has {@h}$%{electron.bal::%offline player-arg%}%{@t}."
 				else:
 					send "{@em}"
-command /pay [<integer>] [<offline player-arg>]:
+command /pay [<integer>] [<offline player>]:
 	permission: electron.pay
 	description: Sends money to a player
 	permission message: {@em}
@@ -41,8 +41,8 @@ command /pay [<integer>] [<offline player-arg>]:
 					if {electron.bal::%sender%} is greater than or equal to arg-1:
 						subtract arg-1 from {electron.bal::%sender%}
 						add arg-1 to {electron.bal::%offline player-arg%}
-						send " {@p} You sent {@h}$%arg-1%{@t} to {@h}%offline player-arg%{@t}." to sender
-						send " {@p} You recieved {@h}$%arg-1%{@t} from {@h}%sender%{@t}." to offline player-arg
+						send "{@p} You sent {@h}$%arg-1%{@t} to {@h}%offline player-arg%{@t}." to sender
+						send "{@p} You recieved {@h}$%arg-1%{@t} from {@h}%sender%{@t}." to offline player-arg
 					else:
 						send "&c&oYou don't have enough money."
 						send "&cUsage: /pay &m%arg-1%&r&c %offline player-arg%"
