@@ -53,10 +53,101 @@ command /pay [<integer>] [<offline player>]:
 				send "&cUsage: /pay %arg-1% [player]"
 		else:
 			send "&cUsage: /pay [amount] [player]"
-command /request [<integer>] [<player>]:
-	permission: electron.request
-	description: Requests money from a player
+command /economy [<text>] [<integer>] [<offline player>]:
+	permission: electron.economy
+	description: Controls economy
 	permission message: {@em}
-	usage: /request [amount] [player]
+	usage: /economy [set|add|remove] [amount] [player]
 	trigger:
-		send "working on it i just got lazy"
+		if arg 1 is "set" or "=":
+			if arg 2 is set:
+				if arg 3 is set:
+					set {electron.bal::%offline player-arg%} to arg-2
+					send "{@p} Set {@h}%offline player-arg%'s{@t} balance to &a$%arg-2%{@t}."
+					send "{@p} Your balance has been set to &a$%arg-2%{@t}." to offline player-arg
+				else:
+					send "&cUsage: /economy %arg-1% %arg-2% [player]"
+			else:
+				send "&cUsage: /economy %arg-1% [amount] [player]"
+		else if arg 1 is "add" or "+":
+			if arg 2 is set:
+				if arg 3 is set:
+					add arg-2 to {electron.bal::%offline player-arg%}
+					send "{@p} Added &a$%arg-2%{@t} to {@h}%offline player-arg%'s{@t} balance."
+					send "{@p} You were given &a$%arg-2%{@t}." to offline player-arg
+				else:
+					send "&cUsage: /economy %arg-1% %arg-2% [player]"
+			else:
+				send "&cUsage: /economy %arg-1% [amount] [player]"
+		else if arg 1 is "remove" or "-":
+			if arg 2 is set:
+				if arg 3 is set:
+					remove arg-2 from {electron.bal::%offline player-arg%}
+					send "{@p} Removed &a$%arg-2%{@t} from {@h}%offline player-arg%'s{@t} balance."
+					send "{@p} You have lost &a$%arg-2%{@t}." to offline player-arg
+				else:
+					send "&cUsage: /economy %arg-1% %arg-2% [player]"
+			else:
+				send "&cUsage: /economy %arg-1% [amount] [player]"
+		else:
+			send "&cUsage: /economy [set|add|remove] [player]"
+#command /request [<integer>] [<player>]:
+#	permission: electron.request
+#	description: Requests money from a player
+#	permission message: {@em}
+#	usage: /request [amount] [player]
+#	trigger:
+#		if arg 1 is set:
+#			if arg 2 is set:
+#				if {electron.bal::%player-arg%} is less than or equal to arg-1:
+#					send "{@p} Request sent to {@h}%player-arg%{@t}."
+#					send "{@p} {@h}%sender%{@t} has requested &a$%arg-1%{@h} from you." to player-arg
+#					send "{@p} Type &6&n/rqaccept (player){@t} or &6&n/rqdeny (player){@t}."
+#					send "{@p} Request will time out in &e30 Seconds{@t}."
+#					set {electron.moneyRequested::%sender%} to arg-1
+#					set {electron.moneyRequestee::%player-arg%} to true
+#					set {electron.moneyRequester::%sender%} to true
+#					wait 30 Seconds
+#					delete {electron.moneyRequested::%sender%}
+#					delete {electron.moneyRequestee::%player-arg%}
+#					delete {electron.moneyRequester::%sender%}
+#					stop
+#				else:
+#					send "&c&o%player-arg% does not have enough money."
+#					send "&cUsage: /request &m%arg-1%&r&c %player-arg%"
+#			else:
+#				send "&cUsage: /request %arg-1% [player]"
+#		else:
+#			send "&cUsage: /request [amount] [player]"
+#command /rqaccept [<player>]:
+#	permission: electron.request.accept
+#	description: Accepts a money request from a player
+#	permission message: {@em}
+#	usage: /rqaccept (player)
+#	trigger:
+#		if arg 1 is set:
+#			if {electron.moneyRequestee::%sender%} is true:
+#				if "%{electron.moneyRequester::%player-arg%}%" is "%player-arg%":
+#					if {electron.bal::%sender%} is less than or equal to {electron.moneyRequested::%player-arg%}:
+#						remove {electron.moneyRequested::%player-arg%} from {electron.bal::%sender%}
+#						add {electron.moneyRequested::%player-arg%} to {electron.bal::%player-arg%}
+#						send "{@p} &a$%{electron.moneyRequested::%player-arg%}%{@t} was transfered to {@h}%sender%{@t}."
+#						send "{@p} You recieved &a$%{electron.moneyRequested::%player-arg%}%{@t} from {@h}%player-arg%{@t}."
+#						delete {electron.moneyRequested::%player-arg%}
+#						delete {electron.moneyRequestee::%sender%}
+#						delete {electron.moneyRequester::%player-arg%}
+#						stop
+#					else:
+#						send "&c&oYou do not have sufficient funds."
+#						send "&4Transaction canceled."
+#						send "&4Transaction canceled due to &o%sender%&r&4 not having sufficient funds." to player-arg
+#						delete {electron.moneyRequested::%player-arg%}
+#						delete {electron.moneyRequestee::%sender%}
+#						delete {electron.moneyRequester::%player-arg%}
+#				else:
+#					send "&c&oYou do not have a request from %player-arg%"
+#			else:
+#				send "&cYou do not have a current request."
+#		else:
+#			send "&cUsage: /rqaccept (player)"
+#
