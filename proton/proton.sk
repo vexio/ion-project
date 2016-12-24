@@ -518,8 +518,34 @@ command /time [<text>] [<text>]:
 			else if arg 2 is "dusk":
 				set time to 7:00pm
 				send "{@p} Time set to {@h}Dusk{@t}, or &a7:00am{@t}."
+			else if arg 2 is "permday":
+				set time to 12:00pm
+				send "{@p} Permaday enabled."
+				player command "/mv gamerule doDaylightCycle false"
 			else:
 				send "&c&oTime does not exist."
 				send "&cUsage: &c/time %arg-1% &m%arg-2%"
 		else:
 			send "&cUsage: /time [set] [day|night|noon|midnight|...]"
+command /weather [<text>]:
+	permission: proton.weather
+	permission message: {@em}
+	usage: &c/weather [sun|rain|thunder]
+	description: Sets the worlds weather
+	trigger:
+		if arg 1 is "sun":
+			set weather to clear
+			send "{@p} Weather set to {@h}Sun{@t}."
+		else if arg 1 is "rain":
+			set weather to rain
+			send "{@p} Weather set to {@h}Rain{@t}."
+		else if arg 1 is "thunder":
+			set weather to thunder
+			send "{@p} Weather set to {@h}Thunder{@t}."
+		else if arg 1 is "permclear":
+			set weather to clear
+			set {proton.permclear} to true
+			send "{@p} Perm Weather has been set to clear."
+on weather change:
+	if {proton.permclear} is true:
+		set weather to clear
