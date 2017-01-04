@@ -374,24 +374,6 @@ command /speed [<number>] [<player>]:
 						set the player-arg's walk speed to 0.2
 		else:
 			send "&cUsage: /speed [0-5] (player)"
-#command /butcher [<text>]:
-#	permission: proton.butcher
-#	permission message: {@em}
-#	usage: &c/butcher [animals|monsters|all:*]
-#	description: Deletes entites
-#	trigger:
-#		if arg 1 is "animals":
-#			kill all {@animals} in the sender's world
-#			send "{@p} Killed all {@h}Animals{@t}."
-#		else if arg 1 is "monsters":
-#			kill all {@monsters} in the sender's world
-#			send "{@p} Killed all {@h}Monsters{@t}."
-#		else if arg 1 is "all" or "*":
-#			kill all {@animals} in the sender's world
-#			kill all {@monsters} in the sender's world
-#			send "{@p} Killed all {@h}entities{@t}."
-#		else:
-#			send "&cUsage: /butcher [animals|monsters|all:*]"
 command /blacklist [<text>] [<offline player>]:
 	permission: proton.blacklist
 	permission message: {@em}
@@ -518,10 +500,15 @@ command /time [<text>] [<text>]:
 			else if arg 2 is "dusk":
 				set time to 7:00pm
 				send "{@p} Time set to {@h}Dusk{@t}, or &a7:00am{@t}."
-			else if arg 2 is "permday":
-				set time to 12:00pm
-				send "{@p} Permaday enabled."
-				player command "/mv gamerule doDaylightCycle false"
+			else if arg 2 is "perm":
+				if {proton.permTime} is true:
+					set {proton.permTime} to false
+					send "{@p} {@h}Perm Time{@t} disabled."
+					make player execute command "/gamerule doDaylightCycle false"
+				else:
+					set {proton.permTime} to true
+					send "{@p} {@h}Perm Time{@t} enabled."
+					make player execute command "/gamerule doDaylightCycle true"
 			else:
 				send "&c&oTime does not exist."
 				send "&cUsage: &c/time %arg-1% &m%arg-2%"
@@ -542,10 +529,13 @@ command /weather [<text>]:
 		else if arg 1 is "thunder":
 			set weather to thunder
 			send "{@p} Weather set to {@h}Thunder{@t}."
-		else if arg 1 is "permclear":
-			set weather to clear
-			set {proton.permclear} to true
-			send "{@p} Perm Weather has been set to clear."
+		else if arg 1 is "perm":
+			if {proton.permWeather} is true:
+				set {proton.permWeather} to false
+				send "{@p} {@h}Perm Weather{@t} disabled."
+			else:
+				set {proton.permWeather} to true
+				send "{@p} {@h}Perm Weather{@t} enabled."
 on weather change:
-	if {proton.permclear} is true:
-		set weather to clear
+	if {proton.permWeather} is true:
+		cancel event
