@@ -7,6 +7,9 @@ options:
 	quitMessage: &4&l«&r &c
 	animals: pig and sheep and cow and horse and chicken and wolf and ocelot and bat and mooshroom and rabbit and squid and villager and donkey
 	monsters: cave spider and enderman and spider and zombie pigman and blaze and creeper and guardian and endermite and ghast and magma cube and silverfish and skeleton and slime and witch and wither skeleton and zombie
+on load:
+	if {proton.maxHealth} is not set:
+		set {proton.maxHealth} to 10
 command /proton [<text>]:
 	description: Shows all commands in Proton
 	trigger:
@@ -475,45 +478,54 @@ command /whitelist [<text>] [<offline player>]:
 		else:
 			send "&cUsage: /whitelist [add|remove|list|reset] (player)"
 		stop
-command /time [<text>] [<text>]:
+command /time [<text>]:
 	permission: proton.time
 	permission message: {@em}
 	usage: &c/time [set] [day|night|noon|midnight|...]
 	description: Sets the time of day
 	trigger:
-		if arg 1 is "set":
-			if arg 2 is "day":
-				set time to 9:00am
-				send "{@p} Time set to {@h}Day{@t}, or &a9:00am{@t}."
-			else if arg 2 is "noon":
-				set time to 12:00pm
-				send "{@p} Time set to {@h}Noon{@t}, or &a12:00pm{@t}."
-			else if arg 2 is "night":
-				set time to 9:00pm
-				send "{@p} Time set to {@h}Night{@t}, or &a9:00pm{@t}."
-			else if arg 2 is "midnight":
-				set time to 12:00am
-				send "{@p} Time set to {@h}Midnight{@t}, or &a12:00am{@t}."
-			else if arg 2 is "dawn":
-				set time to 6:00am
-				send "{@p} Time set to {@h}Dawn{@t}, or &a6:00am{@t}."
-			else if arg 2 is "dusk":
-				set time to 7:00pm
-				send "{@p} Time set to {@h}Dusk{@t}, or &a7:00am{@t}."
-			else if arg 2 is "perm":
-				if {proton.permTime} is true:
-					set {proton.permTime} to false
-					send "{@p} {@h}Perm Time{@t} disabled."
-					make player execute command "/gamerule doDaylightCycle false"
-				else:
-					set {proton.permTime} to true
-					send "{@p} {@h}Perm Time{@t} enabled."
-					make player execute command "/gamerule doDaylightCycle true"
+		if arg 1 is "day":
+			set time to 9:00am
+			send "{@p} Time set to {@h}Day{@t}, or &a9:00am{@t}."
+		else if arg 1 is "noon":
+			set time to 12:00pm
+			send "{@p} Time set to {@h}Noon{@t}, or &a12:00pm{@t}."
+		else if arg 1 is "night":
+			set time to 9:00pm
+			send "{@p} Time set to {@h}Night{@t}, or &a9:00pm{@t}."
+		else if arg 1 is "midnight":
+			set time to 12:00am
+			send "{@p} Time set to {@h}Midnight{@t}, or &a12:00am{@t}."
+		else if arg 1 is "dawn":
+			set time to 6:00am
+			send "{@p} Time set to {@h}Dawn{@t}, or &a6:00am{@t}."
+		else if arg 1 is "dusk":
+			set time to 7:00pm
+			send "{@p} Time set to {@h}Dusk{@t}, or &a7:00am{@t}."
+		else if arg 1 is "perm":
+			if {proton.permTime} is true:
+				set {proton.permTime} to false
+				send "{@p} {@h}Perm Time{@t} disabled."
+				make player execute command "/gamerule doDaylightCycle false"
 			else:
-				send "&c&oTime does not exist."
-				send "&cUsage: &c/time %arg-1% &m%arg-2%"
+				set {proton.permTime} to true
+				send "{@p} {@h}Perm Time{@t} enabled."
+				make player execute command "/gamerule doDaylightCycle true"
 		else:
-			send "&cUsage: /time [set] [day|night|noon|midnight|...]"
+			send "&c&oTime does not exist."
+			send "&cUsage: &c/time &m%arg-1%"
+command /day:
+	permission: proton.time
+	permission message: {@em}
+	description: Sets the time of day
+	trigger:
+		player command "/time day"
+command /night:
+	permission: proton.time
+	permission message: {@em}
+	description: Sets the time of day
+	trigger:
+		player command "/time night"
 command /weather [<text>]:
 	permission: proton.weather
 	permission message: {@em}
@@ -539,3 +551,115 @@ command /weather [<text>]:
 on weather change:
 	if {proton.permWeather} is true:
 		cancel event
+command /sun:
+	permission: proton.weather
+	permission message: {@em}
+	description: Sets the worlds weather
+	trigger:
+		player command "/weather sun"
+command /rain:
+	permission: proton.weather
+	permission message: {@em}
+	description: Sets the worlds weather
+	trigger:
+		player command "/weather rain"
+command /thunder:
+	permission: proton.weather
+	permission message: {@em}
+	description: Sets the worlds weather
+	trigger:
+		player command "/weather thunder"
+command /head [<text>]:
+	permission: proton.head
+	permission message: {@em}
+	usage: &c/head [player]
+	description: Gives a player head
+	aliases: /skull, /playerhead
+	trigger:
+		if arg 1 is set:
+			set {_head} to arg-1 parsed as offline player
+			give {_head}'s skull named "&aPlayer Head" with lore "&7Skull Owner: &f%arg-1%" to player
+			send "{@p} Given {@h}%arg-1%{@t}'s Head."
+		else if arg 1 is not set:
+			#set {_head} to sender
+			give player's skull named "&aPlayer Head" with lore "&7Skull Owner: &f%player%" to player
+			send "{@p} Given {@h}%sender%{@t}'s Head."
+command /clear [<player>]:
+	permission: proton.clear
+	permission message: {@em}
+	usage: &c/clear [player]
+	description: Clears inventory
+	aliases: /ci, /clearinventory
+	trigger:
+		if arg 1 is set:
+			if "%player-arg%" = "%sender%":
+				player command "/clear"
+				stop
+			else:
+				loop player-arg's inventory:
+					add 1 to {_n}
+				clear player-arg's inventory
+				send "{@p} Cleared {@h}%player-arg%'s{@t} inventory, with &a%{_n}% items{@t}."
+				send "{@p} Your inventory has been cleared, with &a%{_n}% items{@t}." to player-arg
+		else:
+			loop player's inventory:
+				add 1 to {_n}
+			clear player's inventory
+			send "{@p} Cleared {@h}your{@t} inventory, with &a%{_n}% items{@t}."
+command /heal [<player>]:
+	permission: proton.heal
+	permission message: {@em}
+	usage: &c/clear [player]
+	description: Heals to full health
+	trigger:
+		if arg 1 is set:
+			if "%player-arg%" = "%sender%":
+				player command "/heal"
+				stop
+			else:
+				heal player-arg
+				send "{@p} Healed {@h}%player-arg%{@t}."
+		else:
+			heal player
+			send "{@p} You were healed."
+command /feed [<player>]:
+	permission: proton.feed
+	permission message: {@em}
+	usage: &c/feed [player]
+	description: Feeds to full hunger
+	trigger:
+		if arg 1 is set:
+			if "%player-arg%" = "%sender%":
+				player command "/feed"
+				stop
+			else:
+				heal player-arg
+				send "{@p} Nourished {@h}%player-arg%{@t}."
+				send "{@p} You have been nourished." to player-arg
+		else:
+			heal player
+			send "{@p} You have been nourished."
+command /maxhealth [<integer>]:
+	permission: proton.maxhealth
+	permission message: {@em}
+	usage: &c/maxhealth [number]
+	description: Sets maximum health, goes by hearts.
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /maxhealth [1-100|0=reset]"
+		else if arg 1 is less than or equal to 0:
+			set {proton.maxHealth} to 10
+			loop all players:
+				set the maximum health of loop-player to {proton.maxHealth}
+			send "{@p} Maximum health has been set to &a%{proton.maxHealth}% Hearts{@t}."
+		else if arg 1 is greater than 100:
+			send "&c&oToo high of a number!"
+			send "&cUsage: /maxhealth [1-100|0=reset]"
+		else:
+			set {proton.maxHealth} to arg-1
+			loop all players:
+				set the maximum health of loop-player to {proton.maxHealth}
+			send "{@p} Maximum health has been set to &a%{proton.maxHealth}% Hearts{@t}."
+on join:
+	if {proton.maxHealth} is set:
+		set the maximum health of event-player to {proton.maxHealth}
