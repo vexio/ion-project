@@ -596,16 +596,12 @@ command /clear [<player>]:
 				player command "/clear"
 				stop
 			else:
-				loop player-arg's inventory:
-					add 1 to {_n}
 				clear player-arg's inventory
-				send "{@p} Cleared {@h}%player-arg%'s{@t} inventory, with &a%{_n}% items{@t}."
-				send "{@p} Your inventory has been cleared, with &a%{_n}% items{@t}." to player-arg
+				send "{@p} Cleared {@h}%player-arg%'s{@t} inventory{@t}."
+				send "{@p} Your inventory has been cleared{@t}." to player-arg
 		else:
-			loop player's inventory:
-				add 1 to {_n}
 			clear player's inventory
-			send "{@p} Cleared {@h}your{@t} inventory, with &a%{_n}% items{@t}."
+			send "{@p} Cleared {@h}your{@t} inventory{@t}."
 command /heal [<player>]:
 	permission: proton.heal
 	permission message: {@em}
@@ -639,27 +635,27 @@ command /feed [<player>]:
 		else:
 			heal player
 			send "{@p} You have been nourished."
-command /maxhealth [<integer>]:
-	permission: proton.maxhealth
-	permission message: {@em}
-	usage: &c/maxhealth [number]
-	description: Sets maximum health, goes by hearts.
-	trigger:
-		if arg 1 is not set:
-			send "&cUsage: /maxhealth [1-100|0=reset]"
-		else if arg 1 is less than or equal to 0:
-			set {proton.maxHealth} to 10
-			loop all players:
-				set the maximum health of loop-player to {proton.maxHealth}
-			send "{@p} Maximum health has been set to &a%{proton.maxHealth}% Hearts{@t}."
-		else if arg 1 is greater than 100:
-			send "&c&oToo high of a number!"
-			send "&cUsage: /maxhealth [1-100|0=reset]"
-		else:
-			set {proton.maxHealth} to arg-1
-			loop all players:
-				set the maximum health of loop-player to {proton.maxHealth}
-			send "{@p} Maximum health has been set to &a%{proton.maxHealth}% Hearts{@t}."
-on join:
-	if {proton.maxHealth} is set:
-		set the maximum health of event-player to {proton.maxHealth}
+#command /maxhealth [<integer>]:
+#	permission: proton.maxhealth
+#	permission message: {@em}
+#	usage: &c/maxhealth [number]
+#	description: Sets maximum health, goes by hearts.
+#	trigger:
+#		if arg 1 is not set:
+#			send "&cUsage: /maxhealth [1-100|0=reset]"
+#		else if arg 1 is less than or equal to 0:
+#			set {proton.maxHealth} to 10
+#			loop all players:
+#				set max health of loop-player to {proton.maxHealth}
+#			send "{@p} Maximum health has been set to &a%{proton.maxHealth}% Hearts{@t}."
+#		else if arg 1 is greater than 100:
+#			send "&c&oToo high of a number!"
+#			send "&cUsage: /maxhealth [1-100|0=reset]"
+#		else:
+#			set {proton.maxHealth} to arg-1
+#			loop all players:
+#				set max health of loop-player to {proton.maxHealth}
+#			send "{@p} Maximum health has been set to &a%{proton.maxHealth}% Hearts{@t}."
+#on join:
+#	if {proton.maxHealth} is set:
+#		set event-player's max health to {proton.maxHealth}
