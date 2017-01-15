@@ -315,68 +315,48 @@ command /speed [<number>] [<player>]:
 	description: Changes walk/flight speed
 	trigger:
 		if arg 1 is set:
-			if arg 2 is set:
+			if arg 2 is not set:
 				if arg 1 is between 1 and 5:
 					set {_speed} to arg-1 / 5
-					set {_block} to block below player-arg
-					if {_block} is air:
-						if "%player-arg%" = "%sender%":
-							#send "{@p} {@h}%player-arg%{@t}'s flight speed was set to &a%arg-2%{@t}."
-							send "{@p} {@h}Your{@t} flight speed was set to &a%arg-2%{@t}." to player-arg
-							set the player-arg's flight speed to {_speed}
-						else:
-							send "{@p} {@h}%player-arg%{@t}'s flight speed was set to &a%arg-2%{@t}." to sender
-							send "{@p} {@h}Your{@t} flight speed was set to &a%arg-2%{@t}." to player-arg
-							set the player-arg's flight speed to {_speed}
+					if player is flying:
+						send "{@p} Your flight speed was set to {@h}%arg-1%{@t}."
+						set the player's fly speed to {_speed}
 					else:
-						if "%player-arg%" = "%sender%":
-							#send "{@p} {@h}%player-arg%{@t}'s walk speed was set to &a%arg-2%{@t}."
-							send "{@p} {@h}Your{@t} walk speed was set to &a%arg-2%{@t}." to player-arg
-							set the player-arg's walk speed to {_speed}
-						else:
-							send "{@p} {@h}%player-arg%{@t}'s flight speed was set to &a%arg-2%{@t}." to sender
-							send "{@p} {@h}Your{@t} walk speed was set to &a%arg-2%{@t}." to player-arg
-							set the player-arg's walk speed to {_speed}
-				else if arg-1 is less than or equal to 0:
-					set {_block} to block below player-arg
-					if {_block} is air:
-						if "%player-arg%" = "%sender%":
-							#send "{@p} {@h}%player-arg%{@t}'s flight speed was set to &a%arg-2%{@t}."
-							send "{@p} {@h}Your{@t} flight speed was reset." to player-arg
-							set the player-arg's flight speed to 0.1
-						else:
-							send "{@p} {@h}%player-arg%{@t}'s flight speed was reset." to sender
-							send "{@p} {@h}Your{@t} flight speed was reset." to player-arg
-							set the player-arg's flight speed to 0.1
+						send "{@p} Your walk speed was set to {@h}%arg-1%{@t}."
+						set the player's walk speed to {_speed}
+				else if arg 1 is greater than 5:
+					send "&c&oToo large of a number."
+					send "&cUsage: /speed [0-5] (player)"
+				else:
+					if player is flying:
+						send "{@p} Your flight speed was {@h}reset{@t}."
+						reset the player's fly speed
 					else:
-						if "%player-arg%" = "%sender%":
-							#send "{@p} {@h}%player-arg%{@t}'s walk speed was set to &a%arg-2%{@t}."
-							send "{@p} {@h}Your{@t} walk speed was reset." to player-arg
-							set the player-arg's walk speed to 0.2
-						else:
-							send "{@p} {@h}%player-arg%{@t}'s flight speed was set to &a%arg-2%{@t}." to sender
-							send "{@p} {@h}Your{@t} walk speed was reset." to player-arg
-							set the player-arg's walk speed to 0.2
-			else:
-				if arg-1 is between 1 and 5:
+						send "{@p} Your walk speed was {@h}reset{@t}."
+						reset the player's walk speed
+			else if arg 2 is set:
+				if arg 1 is between 1 and 5:
 					set {_speed} to arg-1 / 5
-					set {_block} to block below player-arg
-					if {_block} is air:
-						send "{@p} {@h}Your{@t} flight speed was set to &a%arg-2%{@t}."
-						set the player-arg's flight speed to {_speed}
+					if player-arg is flying:
+						send "{@p} {@h}%player-arg%'s{@t} flight speed was set to {@h}%arg-1%{@t}."
+						send "{@p} Your flight speed was set to {@h}%arg-1%{@t}." to player-arg
+						set the player-arg's fly speed to {_speed}
 					else:
-						send "{@p} {@h}Your{@t} walk speed was set to &a%arg-2%{@t}."
+						send "{@p} {@h}%player-arg%'s{@t} walk speed was set to {@h}%arg-1%{@t}."
+						send "{@p} Your walk speed was set to {@h}%arg-1%{@t}." to player-arg
 						set the player-arg's walk speed to {_speed}
-				else if arg-1 is less than or equal to 0:
-					set {_block} to block below player-arg
-					if {_block} is air:
-						send "{@p} {@h}Your{@t} flight speed was reset." to player-arg
-						set the player-arg's flight speed to 0.1
+				else if arg 1 is greater than 5:
+					send "&c&oToo large of a number."
+					send "&cUsage: /speed [0-5] (player-arg)"
+				else:
+					if player-arg is flying:
+						send "{@p} {@h}%player-arg%'s{@t} flight speed was {@h}reset{@t}."
+						send "{@p} Your flight speed was {@h}reset{@t}." to player-arg
+						reset the player-arg's fly speed
 					else:
-						send "{@p} {@h}Your{@t} walk speed was reset." to player-arg
-						set the player-arg's walk speed to 0.2
-		else:
-			send "&cUsage: /speed [0-5] (player)"
+						send "{@p} {@h}%player-arg%'s{@t} flight speed was {@h}reset{@t}."
+						send "{@p} Your walk speed was {@h}reset{@t}." to player-arg
+						reset the player-arg's walk speed
 command /blacklist [<text>] [<offline player>]:
 	permission: proton.blacklist
 	permission message: {@em}
@@ -613,8 +593,11 @@ command /heal [<player>]:
 				player command "/heal"
 				stop
 			else:
-				heal player-arg
-				send "{@p} Healed {@h}%player-arg%{@t}."
+				if sender has permission "proton.heal.other":
+					heal player-arg
+					send "{@p} Healed {@h}%player-arg%{@t}."
+				else:
+					send "{@em}"
 		else:
 			heal player
 			send "{@p} You were healed."
@@ -629,9 +612,12 @@ command /feed [<player>]:
 				player command "/feed"
 				stop
 			else:
-				heal player-arg
-				send "{@p} Nourished {@h}%player-arg%{@t}."
-				send "{@p} You have been nourished." to player-arg
+				if sender has permission "proton.feed.other":
+					heal player-arg
+					send "{@p} Nourished {@h}%player-arg%{@t}."
+					send "{@p} You have been nourished." to player-arg
+				else:
+					send "{@em}"
 		else:
 			heal player
 			send "{@p} You have been nourished."
