@@ -34,6 +34,7 @@ command /gm [<text>] [<player>]:
 	description: Changes gamemode
 	permission message: {@em}
 	usage: /gm [gamemode] (player)
+	aliases: /gamemode
 	trigger:
 		if arg 1 is not set:
 			send "&cUsage: /gm [num] (player)"
@@ -108,12 +109,26 @@ command /tp [<player>] [<player>]:
 			send "&cUsage: /tp [player] (player)"
 		else if arg 1 is set:
 			if arg 2 is not set:
-				teleport sender to arg-1
-				send "{@p} Teleported to {@h}%arg-1%{@t}." to sender
+				if {proton.teleporting::%sender%} is true:
+					send "&c&oPlayer is already being teleported"
+					stop
+				else:
+					set {proton.teleporting::%sender%} to true
+					teleport sender to arg-1
+					send "{@p} Teleported to {@h}%arg-1%{@t}." to sender
+					wait 1 second
+					delete {proton.teleporting::%sender%}
 			else:
-				teleport arg-1 to arg-2
-				send "{@p} Teleported {@h}%arg-1%{@t}" to sender
-				send "{@p} Teleported to {@h}%sender%{@t}." to arg-1
+				if {proton.teleporting::%arg-1%} is true:
+					send "&c&oPlayer is already being teleported"
+					stop
+				else:
+					set {proton.teleporting::%arg-1%} to true
+					teleport arg-1 to arg-2
+					send "{@p} Teleported {@h}%arg-1%{@t}" to sender
+					send "{@p} Teleported to {@h}%sender%{@t}." to arg-1
+					wait 1 second
+					delete {proton.teleporting::%arg-1%}
 command /tphere [<player>]:
 	permission: proton.tphere
 	description: Teleports a player to sender
@@ -124,9 +139,16 @@ command /tphere [<player>]:
 		if arg 1 is not set:
 			send "&cUsage: /tphere [player]"
 		else if arg 1 is set:
-			teleport arg-1 to sender
-			send "{@p} Teleported {@h}%arg-1%{@t} to you." to sender
-			send "{@p} Teleported to {@h}%sender%{@t}." to arg-1
+			if {proton.teleporting::%arg-1%} is true:
+				send "&c&oPlayer is already being teleported"
+				stop
+			else:
+				set {proton.teleporting::%arg-1%} to true
+				teleport arg-1 to sender
+				send "{@p} Teleported {@h}%arg-1%{@t} to you." to sender
+				send "{@p} Teleported to {@h}%sender%{@t}." to arg-1
+				wait 1 second
+				delete {proton.teleporting::%arg-1%}
 command /tpcoords [<integer>] [<integer>] [<integer>]:
 	permission: proton.tpcoords
 	aliases: /tppos
@@ -138,10 +160,17 @@ command /tpcoords [<integer>] [<integer>] [<integer>]:
 		else if arg 1 is set:
 			if arg 2 is set:
 				if arg 3 is set:
-					set {_world} to sender's world
-					set {_loc} to location(arg-1, arg-2, arg-3, {_world})
-					teleport sender to {_loc}
-					send "{@p} Teleported to {@h}%arg-1%, %arg-2%, %arg-3%{@t}."
+					if {proton.teleporting::%arg-1%} is true:
+						send "&c&oPlayer is already being teleported"
+						stop
+					else:
+						set {proton.teleporting::%arg-1%} to true
+						set {_world} to sender's world
+						set {_loc} to location(arg-1, arg-2, arg-3, {_world})
+						teleport sender to {_loc}
+						send "{@p} Teleported to {@h}%arg-1%, %arg-2%, %arg-3%{@t}."
+						wait 1 second
+						delete {proton.teleporting::%arg-1%}
 				else:
 					send "&c&oInvalid Argument."
 					send "&cUsage: /tpcoords [x] [y] [z]"
@@ -164,9 +193,15 @@ command /home:
 	usage: /home
 	trigger:
 		if {proton.home::%sender's uuid%} is set:
-			teleport sender to {proton.home::%sender's uuid%}
-			send "{@p} Teleported to your home location."
-
+			if {proton.teleporting::%sender%} is true:
+				send "&c&oPlayer is already being teleported"
+				stop
+			else:
+				set {proton.teleporting::%sender%} to true
+				teleport sender to {proton.home::%sender's uuid%}
+				send "{@p} Teleported to your home location."
+				wait 1 second
+				delete {proton.teleporting::%sender%}
 		else:
 			send "&c&oYou do not have a home set."
 			send "&cUsage: /sethome"
@@ -175,17 +210,11 @@ command /setspawn:
 	permission message: {@em}
 	usage: /setspawn
 	trigger:
-		if {proton.spawn} is set:
-			set {proton.spawn} to sender's location
-			set {_x} to sender's x-coordinate
-			set {_y} to sender's y-coordinate
-			set {_z} to sender's z-coordinate
-			send "{@p} Spawn location set to {@h}%{_x}%, %{_y}%, %{_z}%{@t}."
-
-		else:
-			send "&c&oYou do not have a home set."
-			if sender has permission "proton.sethome":
-				send "&cUsage: /sethome"
+		set {proton.spawn} to sender's location
+		set {_x} to sender's x-coordinate
+		set {_y} to sender's y-coordinate
+		set {_z} to sender's z-coordinate
+		send "{@p} Spawn location set to {@h}%{_x}%, %{_y}%, %{_z}%{@t}."
 command /spawn [<player>]:
 	permission: proton.spawn
 	permission message: {@em}
@@ -193,12 +222,26 @@ command /spawn [<player>]:
 	trigger:
 		if {proton.spawn} is set:
 			if arg 1 is set:
-				teleport arg-1 to {proton.spawn}
-				send "{@p} Teleported {@h}%arg-1%{@t} to spawn." to sender
-				send "{@p} Teleported to spawn." to arg-1
+				if {proton.teleporting::%arg-1%} is true:
+					send "&c&oPlayer is already being teleported"
+					stop
+				else:
+					set {proton.teleporting::%arg-1%} to true
+					teleport arg-1 to {proton.spawn}
+					send "{@p} Teleported {@h}%arg-1%{@t} to spawn." to sender
+					send "{@p} Teleported to spawn." to arg-1
+					wait 1 second
+					delete {proton.teleporting::%arg-1%}
 			else:
-				teleport sender to {proton.spawn}
-				send "{@p} Teleported to spawn." to sender
+				if {proton.teleporting::%sender%} is true:
+					send "&c&oPlayer is already being teleported"
+					stop
+				else:
+					set {proton.teleporting::%arg-1%} to true
+					teleport sender to {proton.spawn}
+					send "{@p} Teleported to spawn." to sender
+					wait 1 second
+					delete {proton.teleporting::%arg-1%}
 		else:
 			send "&c&oSpawn is not set."
 			if sender has permission "proton.setspawn":
@@ -288,9 +331,9 @@ command /gmsp [<player>]:
 			send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to player-arg
 			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Spectator{@t}" to sender
 on join:
-	set join message to "{@joinMessage}%name of player%"
+	set join message to " {@joinMessage}%name of player%"
 on quit:
-	set leave message to "{@quitMessage}%name of player%"
+	set leave message to " {@quitMessage}%name of player%"
 command /top:
 	permission: proton.top
 	permission message: {@em}
@@ -659,3 +702,12 @@ command /rename [<text>]:
 				send "{@p} Renamed &n%player's held item%&r to {@h}%colored arg-1%{@t}."
 		else:
 			send "&cUsage: /rename [name]"
+on sign change:
+	if line 1 is set:
+		set line 1 to "%colored line 1%"
+	if line 2 is set:
+		set line 2 to "%colored line 2%"
+	if line 3 is set:
+		set line 3 to "%colored line 3%"
+	if line 4 is set:
+		set line 4 to "%colored line 4%"
