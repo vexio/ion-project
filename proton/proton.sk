@@ -1,5 +1,5 @@
 options:
-	p: &6 ⦿&f #
+	p: &6 ●&f #
 	t: &f
 	h: &7
 	em: &cInvalid Permissions
@@ -19,25 +19,15 @@ command /proton [<text>]:
 			send "&6&m---+---&r &eProton &6&m---+---&r"
 			send " &8• &7A List of commands can be found here:"
 			send " &f&nhttps://goo.gl/EAFlng"
-#		if arg 1 is "reload" or "rl":
-#			if sender has permission "proton.reload":
-#				send "{@p} Reloading {@h}Proton{@t}..."
-#				wait 1 second
-#				if sender is op:
-#					player command "/sk reload %skript%"
-#				else:
-#					console command "/sk reload %skript%"
-#					wait 3 seconds
-#					send "{@p} Successfully reloaded {@h}Proton{@t}."
-command /gm [<text>] [<player>]:
-	permission: proton.gm
+command /gamemode [<text>] [<player>]:
+	permission: proton.gamemode
 	description: Changes gamemode
 	permission message: {@em}
-	usage: /gm [gamemode] (player)
-	aliases: /gamemode
+	usage: /gamemode [gamemode] (player)
+	aliases: /gm
 	trigger:
 		if arg 1 is not set:
-			send "&cUsage: /gm [num] (player)"
+			send "&cUsage: /gamemode [num] (player)"
 		else if arg 1 is "creative" or "c" or "1":
 			if arg 2 is not set:
 				set player's gamemode to creative
@@ -114,6 +104,7 @@ command /tp [<player>] [<player>]:
 					stop
 				else:
 					set {proton.teleporting::%sender%} to true
+					set {proton.lastLoc::%sender%} to sender's location
 					teleport sender to arg-1
 					send "{@p} Teleported to {@h}%arg-1%{@t}." to sender
 					wait 1 second
@@ -124,9 +115,10 @@ command /tp [<player>] [<player>]:
 					stop
 				else:
 					set {proton.teleporting::%arg-1%} to true
+					set {proton.lastLoc::%arg-1%} to arg-1's location
 					teleport arg-1 to arg-2
-					send "{@p} Teleported {@h}%arg-1%{@t}" to sender
-					send "{@p} Teleported to {@h}%sender%{@t}." to arg-1
+					send "{@p} Teleported {@h}%arg-1%{@t} to {@t}%arg-2%{@t}" to sender
+					send "{@p} Teleported to {@h}%arg-2%{@t}." to arg-1
 					wait 1 second
 					delete {proton.teleporting::%arg-1%}
 command /tphere [<player>]:
@@ -144,11 +136,57 @@ command /tphere [<player>]:
 				stop
 			else:
 				set {proton.teleporting::%arg-1%} to true
+				set {proton.lastLoc::%arg-1%} to arg-1's location
 				teleport arg-1 to sender
 				send "{@p} Teleported {@h}%arg-1%{@t} to you." to sender
 				send "{@p} Teleported to {@h}%sender%{@t}." to arg-1
 				wait 1 second
 				delete {proton.teleporting::%arg-1%}
+command /tpall:
+	permission: proton.tpall
+	description: Teleports all players to sender
+	permission message: {@em}
+	usage: /tpall
+	trigger:
+		set {_loc} to sender's location
+		set {_count} to 0
+		set {_total} to number of all players
+		loop all players:
+			teleport loop-player to sender's location
+			add 1 to {_count}
+			if {_count} = 20:
+				send "{@p} Sent 20 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 40:
+				send "{@p} Sent 40 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 60:
+				send "{@p} Sent 60 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 80:
+				send "{@p} Sent 80 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 100:
+				send "{@p} Sent 100 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 120:
+				send "{@p} Sent 120 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 140:
+				send "{@p} Sent 140 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 160:
+				send "{@p} Sent 160 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 180:
+				send "{@p} Sent 180 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+			if {_count} = 200:
+				send "{@p} Sent 200 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				wait 3 seconds
+		delete {_loc}
+		send "{@p} Teleported all players to your location"
+		broadcast "{@p} Teleported to {@h}%sender%{@t}."
 command /tpcoords [<integer>] [<integer>] [<integer>]:
 	permission: proton.tpcoords
 	aliases: /tppos
@@ -164,11 +202,16 @@ command /tpcoords [<integer>] [<integer>] [<integer>]:
 						send "&c&oPlayer is already being teleported"
 						stop
 					else:
+						set {_x} to arg-1
+						set {_z} to arg-3
+						add 0.5 to {_x}
+						add 0.5 to {_z}
 						set {proton.teleporting::%arg-1%} to true
+						set {proton.lastLoc::%sender%} to sender's location
 						set {_world} to sender's world
-						set {_loc} to location(arg-1, arg-2, arg-3, {_world})
+						set {_loc} to location({_x}, arg-2, {_z}, {_world})
 						teleport sender to {_loc}
-						send "{@p} Teleported to {@h}%arg-1%, %arg-2%, %arg-3%{@t}."
+						send "{@p} Teleported to {@h}%{_x}%, %arg-2%, %{_z}%{@t}."
 						wait 1 second
 						delete {proton.teleporting::%arg-1%}
 				else:
@@ -198,6 +241,7 @@ command /home:
 				stop
 			else:
 				set {proton.teleporting::%sender%} to true
+				set {proton.lastLoc::%sender%} to sender's location
 				teleport sender to {proton.home::%sender's uuid%}
 				send "{@p} Teleported to your home location."
 				wait 1 second
@@ -205,6 +249,105 @@ command /home:
 		else:
 			send "&c&oYou do not have a home set."
 			send "&cUsage: /sethome"
+command /warp [<text>] [<player>]:
+	permission: proton.warps
+	permission message: {@em}
+	usage: /warp [warpName] (player)
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				if sender has permission "proton.warps.other":
+					if "%{proton.warps::*}%" contains "%arg-1%":
+						if sender has permission "proton.warp.%arg-1%":
+							set {proton.lastLoc::%player-arg%} to player-arg's location
+							teleport player-arg to {proton.warpLoc::%arg-1%}
+							send "{@p} Teleported {@h}%player-arg%{@t} to {@h}%arg-1%{@t}." to sender
+							send "{@p} Teleported to {@h}%arg-1%{@t}." to player-arg
+						else:
+							send "&cYou don't have permission to this warp" to sender
+					else:
+						send "&cWarp &6%arg-1%&c does not exist" to sender
+				else:
+					send "&cYou don't have permission to warp other players."
+			else:
+				if "%{proton.warps::*}%" contains "%arg-1%":
+					if sender has permission "proton.warp.%arg-1%":
+						set {proton.lastLoc::%player%} to player's location
+						teleport player to {proton.warpLoc::%arg-1%}
+						send "{@p} Teleported to {@h}%arg-1%{@t}." to player
+					else:
+						send "&cYou don't have permission to this warp" to player
+				else:
+					send "&cWarp &6%arg-1%&c does not exist" to player
+		else:
+			send "&cUsage: /warp [warpName] (player)"
+		stop
+command /setwarp [<text>]:
+	permission: proton.setwarp
+	permission message: {@em}
+	usage: /setwarp [warpName]
+	aliases: /warpset
+	trigger:
+		if arg 1 is set:
+			if "%arg-1%" contains " " or "," or "." or "::" or ";" or "<" or ">" or "{" or "}" or "(" or ")" or ":" or "-" or "+":
+				send "&cWarps cannot contain special characters. Use &oA-Z&r&c and &o0-9&r&c."
+				stop
+			else:
+				if "%{proton.warps::*}%" contains "%arg-1%":
+					if {proton.warpOverwite::%player%} is not set:
+						send "&cWarp &6%arg-1%&c already exists. To overwrite, run the command again."
+						set {proton.warpOverwite::%player%} to true
+						wait 10 seconds
+						delete {proton.warpOverwite::%player%}
+					else:
+						set {proton.warpLoc::%arg-1%} to player's location
+						if "%{proton.warps::*}%" does not contain "%arg-1%":
+							add arg-1 to {proton.warps::*}
+							send "{@p} Warp {@h}%arg-1%{@t} has been set to your location"
+						else:
+							send "{@p} Warp {@h}%arg-1%{@t} has been set to your location"
+				else:
+					set {proton.warpLoc::%arg-1%} to player's location
+					if "%{proton.warps::*}%" does not contain "%arg-1%":
+						add arg-1 to {proton.warps::*}
+						send "{@p} Warp {@h}%arg-1%{@t} has been set to your location"
+					else:
+						send "{@p} Warp {@h}%arg-1%{@t} has been set to your location"
+		else:
+			send "&cUsage: /setwarp [warpName]"
+		stop
+command /delwarp [<text>]:
+	permission: proton.delwarp
+	permission message: {@em}
+	usage: /delwarp [warpName]
+	aliases: /warpdel
+	trigger:
+		if arg 1 is "-c":
+			player has permission "proton.resetWarps":
+				clear {proton.warps::*}
+				clear {proton.warpLoc::*}
+				send "{@p} All warps cleared"
+		else if arg 1 is set:
+			if "%{proton.warps::*}%" contains "%arg-1%":
+				delete {proton.warpLoc::%arg-1%}
+				remove arg-1 from {proton.warps::*}
+				send "{@p} Warp {@h}%arg-1%{@t} has been deleted"
+			else:
+				send "&cWarp &6%arg-1%&c does not exist."
+		else:
+			send "&cUsage: /delwarp [warpName]"
+command /warps:
+	permission: proton.warps
+	permission message: {@em}
+	usage: /warps
+	aliases: /warplist
+	trigger:
+		send "{@p} &aAll warps"
+		if "%{proton.warps::*}%" = "<none>":
+			send "   &7▪ &cNo warps set"
+		else:
+			send "   &7▪ &f&o%{proton.warps::*}%"
+		stop
 command /setspawn:
 	permission: proton.setspawn
 	permission message: {@em}
@@ -227,6 +370,7 @@ command /spawn [<player>]:
 					stop
 				else:
 					set {proton.teleporting::%arg-1%} to true
+					set {proton.lastLoc::%arg-1%} to arg-1's location
 					teleport arg-1 to {proton.spawn}
 					send "{@p} Teleported {@h}%arg-1%{@t} to spawn." to sender
 					send "{@p} Teleported to spawn." to arg-1
@@ -238,6 +382,7 @@ command /spawn [<player>]:
 					stop
 				else:
 					set {proton.teleporting::%arg-1%} to true
+					set {proton.lastLoc::%sender%} to sender's location
 					teleport sender to {proton.spawn}
 					send "{@p} Teleported to spawn." to sender
 					wait 1 second
@@ -625,7 +770,7 @@ command /clear [<player>]:
 		else:
 			clear player's inventory
 			send "{@p} Cleared {@h}your{@t} inventory{@t}."
-command /heal [<player>]:
+command /heal [< player>]:
 	permission: proton.heal
 	permission message: {@em}
 	usage: &c/clear [player]
@@ -644,6 +789,16 @@ command /heal [<player>]:
 		else:
 			heal player
 			send "{@p} You were healed."
+on command "/heal *":
+	if player has permission "proton.heal.all":
+		loop all players:
+			heal loop-player
+			send "{@p} Healed all players"
+on command "/feed *":
+	if player has permission "proton.feed.all":
+		loop all players:
+			set the player's food level to 10
+			send "{@p} Nourished all players"
 command /feed [<player>]:
 	permission: proton.feed
 	permission message: {@em}
@@ -656,13 +811,13 @@ command /feed [<player>]:
 				stop
 			else:
 				if sender has permission "proton.feed.other":
-					heal player-arg
+					set the player's food level to 10
 					send "{@p} Nourished {@h}%player-arg%{@t}."
 					send "{@p} You have been nourished." to player-arg
 				else:
 					send "{@em}"
 		else:
-			heal player
+			set the player's food level to 10
 			send "{@p} You have been nourished."
 command /maxhealth [<integer>]:
 	permission: proton.maxhealth
@@ -711,3 +866,34 @@ on sign change:
 		set line 3 to "%colored line 3%"
 	if line 4 is set:
 		set line 4 to "%colored line 4%"
+command /back:
+	permission: proton.back
+	permission message: {@em}
+	usage: &c/back
+	description: Teleports to last location
+	trigger:
+		if {proton.lastLoc::%sender%} is set:
+			set {_lastLoc} to sender's location
+			teleport sender to {proton.lastLoc::%sender%}
+			set {proton.lastLoc::%sender%} to {_lastLoc}
+			send "{@p} Teleported to previous location."
+		else:
+			send "&cYou have no previous location!"
+#command /killall [<text>]:
+#	permission: proton.killall
+#	permission message: {@em}
+#	usage: &c/killall [...]
+#	description: Kills specified or all entities
+#	trigger:
+#		if arg 1 is not set:
+#			kill all bat, chicken, cow, pig, rabbit, sheep, horse, squid, villager, spider, enderman, zombie, blaze, creeper, ghast, silverfish, skeleton, slime, witch, wolf, ocelot, iron golem, snow golem, enderdragon, wither in player's world
+#			send "{@p} Killed all entites."
+#		else if arg 1 is "passive" or "animals":
+#			kill all bat, chicken, cow, pig, rabbit, sheep, horse, squid, villager, wolf, ocelot, iron golem, snow golem in player's world
+#			send "{@p} Killed all passive entities."
+#		else if arg 1 is "hostile" or "monsters":
+#			kill all spider, enderman, zombie, blaze, creeper, ghast, silverfish, skeleton, slime, witch, enderdragon, wither in player's world
+#			send "{@p} Killed all hostile entities."
+#		else if arg 1 is set:
+#			kill all arg-1 in player's world
+#			send "{@p} Killed all {@h}%arg-1%{@t}."
