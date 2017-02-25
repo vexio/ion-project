@@ -3,8 +3,8 @@ options:
 	t: &f
 	h: &7
 	em: &cInvalid Permissions
-	joinMessage: &2&l»&r &a
-	quitMessage: &4&l«&r &c
+	joinMessage: &e%name of player% joined
+	quitMessage: &e%name of player% left
 	animals: pig and sheep and cow and horse and chicken and wolf and ocelot and bat and mooshroom and rabbit and squid and villager and donkey
 	monsters: cave spider and enderman and spider and zombie pigman and blaze and creeper and guardian and endermite and ghast and magma cube and silverfish and skeleton and slime and witch and wither skeleton and zombie
 on load:
@@ -391,33 +391,39 @@ command /spawn [<player>]:
 			send "&c&oSpawn is not set."
 			if sender has permission "proton.setspawn":
 				send "&cUsage: /setspawn"
-command /vanish [<player>]:
-	permission: proton.vanish
-	permission message: {@em}
-	usage: /vanish (player)
-	trigger:
-		if arg 1 is not set:
-			if {proton.visibility::%player%} is true:
-				delete {proton.visibility::%player%}
-				remove invisibility from player
-				send "{@p} You have been reappeared." to player
+#command /effect [<text>] [<text>] [<integer>] [<integer>]:
+#	permission: proton.effect
+#	permission message: {@em}
+#	usage: &c/effect
+#	description: Apply potion effects to a player
+#	trigger:
+#		if arg 1 is not set:
+#			send "&cUsage: /effect [player] [effect] [time] (tier)"
+#		if arg 1 is "all" or "*":
+#			if player has permission "proton.effect.all":
+#				if arg 2 is set:
+#					if arg 3 is set:
+#						if arg 4 is set:
+#							loop all players:
+#								apply (arg-2) (arg-4) to loop-player for (arg-3) seconds
+#							send "{@p} Applied {@h}%arg-2% %arg-3%{@t} to all players for {@h}%arg-4% seconds{@t}."
+#						else:
+#							loop all players:
+#								apply (arg-2) to loop-player for (arg-3) seconds
+#							send "{@p} Applied {@h}%arg-2%{@t} to all players for {@h}%arg-4% seconds{@t}."
+#					else:
+#						send "&cUsage: /effect %arg-1% %arg-2% [time] (tier)"
+#				else:
+#					send "&cUsage: /effect %arg-1% [effect] [time] (tier)"
+#			else:
+#				send "&cInsufficient permissions."
+#		else if arg 1 is set:
+#			if arg 2 is set:
+#				if arg 3 is set:
+#					if arg 4 is set:
+#						apply (arg-2) (arg-4) to (arg-1) for (arg-3) seconds
+#						send "{@p} Applied {@h}%arg-2% %arg-3%{@t} to &a%arg-1% for {@h}%arg-4% seconds{@t}."
 
-			else:
-				set {proton.visibility::%player%} to true
-				apply invisibility 2 to the player for 9999 days
-				send "{@p} You have been vanished." to player
-
-		else if arg 1 is set:
-			if {proton.visibility::%arg-1%} is true:
-				delete {proton.visibility::%arg-1%}
-				remove invisibility from arg-1
-				send "{@p} You have been reappeared." to arg-1
-				send "{@p} {@h}%arg-1%{@t} has been reappeared." to sender
-			else:
-				set {proton.visibility::%arg-1%} to true
-				apply invisibility 2 to the arg-1 for 9999 days
-				send "{@p} You have been vanished." to arg-1
-				send "{@p} {@h}%arg-1%{@t} has been vanished." to sender
 on join:
 	delete {proton.visibility::%event-player%}
 	delete {proton.fly::%event-player%}
@@ -476,9 +482,9 @@ command /gmsp [<player>]:
 			send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to player-arg
 			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Spectator{@t}" to sender
 on join:
-	set join message to " {@joinMessage}%name of player%"
+	set join message to "{@joinMessage}"
 on quit:
-	set leave message to " {@quitMessage}%name of player%"
+	set leave message to "{@quitMessage}"
 command /top:
 	permission: proton.top
 	permission message: {@em}
@@ -495,7 +501,6 @@ command /top:
 			teleport player to block {_n} below block at {_loc}
 			send "{@p} Teleported to top."
 			stop
-		send "&cYou are already at the top."
 command /speed [<number>] [<player>]:
 	permission: proton.speed
 	permission message: {@em}
@@ -670,18 +675,8 @@ command /time [<text>]:
 		else if arg 1 is "dusk":
 			set time to 7:00pm
 			send "{@p} Time set to {@h}Dusk{@t}, or &a7:00am{@t}."
-		else if arg 1 is "perm":
-			if {proton.permTime} is true:
-				set {proton.permTime} to false
-				send "{@p} {@h}Perm Time{@t} disabled."
-				make player execute command "/gamerule doDaylightCycle false"
-			else:
-				set {proton.permTime} to true
-				send "{@p} {@h}Perm Time{@t} enabled."
-				make player execute command "/gamerule doDaylightCycle true"
 		else:
-			send "&c&oTime does not exist."
-			send "&cUsage: &c/time &m%arg-1%"
+			send "&cUsage: &c/time [day|noon|night|midnight|dawn|dusk]"
 command /day:
 	permission: proton.time
 	permission message: {@em}
@@ -709,13 +704,8 @@ command /weather [<text>]:
 		else if arg 1 is "thunder":
 			set weather to thunder
 			send "{@p} Weather set to {@h}Thunder{@t}."
-		else if arg 1 is "perm":
-			if {proton.permWeather} is true:
-				set {proton.permWeather} to false
-				send "{@p} {@h}Perm Weather{@t} disabled."
-			else:
-				set {proton.permWeather} to true
-				send "{@p} {@h}Perm Weather{@t} enabled."
+		else:
+			send "&cUsage: /weather [sun|rain|thunder]"
 on weather change:
 	if {proton.permWeather} is true:
 		cancel event
@@ -770,7 +760,7 @@ command /clear [<player>]:
 		else:
 			clear player's inventory
 			send "{@p} Cleared {@h}your{@t} inventory{@t}."
-command /heal [< player>]:
+command /heal [<player>]:
 	permission: proton.heal
 	permission message: {@em}
 	usage: &c/clear [player]
@@ -791,14 +781,17 @@ command /heal [< player>]:
 			send "{@p} You were healed."
 on command "/heal *":
 	if player has permission "proton.heal.all":
+		cancel event
 		loop all players:
 			heal loop-player
-			send "{@p} Healed all players"
+		send "{@p} Healed all players"
 on command "/feed *":
 	if player has permission "proton.feed.all":
+		cancel event
 		loop all players:
-			set the player's food level to 10
-			send "{@p} Nourished all players"
+			set the loop-player's food level to 20
+			apply saturation 2 to loop-player for 10 seconds
+		send "{@p} Nourished all players"
 command /feed [<player>]:
 	permission: proton.feed
 	permission message: {@em}
@@ -811,14 +804,16 @@ command /feed [<player>]:
 				stop
 			else:
 				if sender has permission "proton.feed.other":
-					set the player's food level to 10
+					set the player-arg's food level to 20
 					send "{@p} Nourished {@h}%player-arg%{@t}."
 					send "{@p} You have been nourished." to player-arg
+					apply saturation 2 to player-arg for 10 seconds
 				else:
 					send "{@em}"
 		else:
-			set the player's food level to 10
+			set the player's food level to 20
 			send "{@p} You have been nourished."
+			apply saturation 2 to player for 10 seconds
 command /maxhealth [<integer>]:
 	permission: proton.maxhealth
 	permission message: {@em}
@@ -850,7 +845,7 @@ command /rename [<text>]:
 	description: Renames held item
 	trigger:
 		if arg 1 is set:
-			if player is holding air:
+			if player's tool is nothing:
 				send "&cYou can't rename nothing!"
 			else:
 				set player's held item's name to "%colored arg-1%"
