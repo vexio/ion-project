@@ -250,13 +250,13 @@ command /home:
 			send "&c&oYou do not have a home set."
 			send "&cUsage: /sethome"
 command /warp [<text>] [<player>]:
-	permission: proton.warps
+	permission: proton.warp
 	permission message: {@em}
 	usage: /warp [warpName] (player)
 	trigger:
 		if arg 1 is set:
 			if arg 2 is set:
-				if sender has permission "proton.warps.other":
+				if sender has permission "proton.warp.other":
 					if "%{proton.warps::*}%" contains "%arg-1%":
 						if sender has permission "proton.warp.%arg-1%":
 							set {proton.lastLoc::%player-arg%} to player-arg's location
@@ -892,3 +892,79 @@ command /back:
 #		else if arg 1 is set:
 #			kill all arg-1 in player's world
 #			send "{@p} Killed all {@h}%arg-1%{@t}."
+command /message [<player>] [<text>]:
+	permission: proton.message
+	permission message: {@em}
+	description: Sends a private message to a player
+	aliases: /msg, /whisper, /w
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				if player-arg is online:
+					set {proton.msgReply::%player-arg%} to sender
+					send "&7[&6You &7» &6%player-arg%&7] &f%arg-2%" to sender
+					send "&7[&6%sender% &7» &6You&7] &f%arg-2%" to player-arg
+				else:
+					send "&c%player-arg% is not online"
+			else:
+				send "&cUsage: /message %arg-1% [message]"
+		else:
+			send "&cUsage: /message [player] [message]"
+command /reply [<text>]:
+	permission: proton.message.reply
+	permission message: {@em}
+	description: Replies to last messanger
+	aliases: /r
+	trigger:
+		if {proton.msgReply::%sender%} is set:
+			if arg 1 is set:
+				set {proton.msgReply::%{proton.msgReply::%sender%}%} to sender
+				send "&7[&6You &7&m->&r &6%{proton.msgReply::%sender%}%&7] &f%arg-1%" to sender
+				send "&7[&6%sender% &7&m->&r &6You&7] &f%arg-1%" to {proton.msgReply::%sender%}
+			else:
+				send "&cUsage: /reply [message]"
+		else:
+			send "&cYou have no-one to reply to. :("
+#command /xp [<text>] [<integer>] [<player>]:
+#	permission: proton.xp
+#	permission message: {@em}
+#	description: Manages experience
+#	aliases: /experience, /exp
+#	trigger:
+#		if arg 1 is "level" or "l":
+#			if arg 2 is set:
+#				if arg 3 is set:
+#					set {_a1} to argument 2 * 2
+#					set {_a2} to argument 2 - {_a1}
+#					reduce the player-arg's level by {_a2}
+#					if arg-2 is less than 0:
+#						send "{@p} Removed &a%arg-2% EXP Levels{@t} from {@h}%player-arg%{@t}."
+#					else:
+#						send "{@p} Gave &a%arg-2% EXP Levels{@t} from {@h}%player-arg%{@t}."
+#				else:
+#					set {_a1} to argument 2 * 2
+#					set {_a2} to argument 2 - {_a1}
+#					reduce the sender's level by {_a2}
+#					if arg-2 is less than 0:
+#						send "{@p} Removed &a%arg-2% EXP Levels{@t}."
+#					else:
+#						send "{@p} Gave &a%arg-2% EXP Levels{@t}."
+#			else if arg 2 is not set:
+#				send "&cUsage: /xp [give|set|remove] [amount] (player)"
+#		else if arg 1 is "point" or "p":
+#			if arg 2 is set:
+#				if arg 3 is set:
+#					give arg-2 xp to the player-arg
+#					if arg-2 is less than 0:
+#						send "{@p} Removed &a%arg-2% EXP Levels{@t} from {@h}%player-arg%{@t}."
+#					else:
+#						send "{@p} Gave &a%arg-2% EXP Levels{@t} from {@h}%player-arg%{@t}."
+#				else:
+#					give arg-2 xp to the player-arg
+#					if arg-2 is less than 0:
+#						send "{@p} Removed &a%{_a}% EXP Levels{@t}."
+#					else:
+#						send "{@p} Gave &a%arg-2% EXP Levels{@t}."
+#			else if arg 2 is not set:
+#				send "&cUsage: /xp [give|set|remove] [amount] (player)"
+#
