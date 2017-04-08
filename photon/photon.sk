@@ -1,0 +1,132 @@
+options:
+	p: &9 ●&f
+	t: &f
+	h: &7
+	em: &cInvalid Permissions
+command /photon [<text>]:
+	description: Shows all commands in Photon
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /photon [help]"
+		else if arg 1 is "help":
+			send "&9&m---+---&r &bPhoton &9&m---+---&r"
+			send " &8• &7A List of commands can be found here:"
+			send " &f&nhttps://goo.gl/EAFlng"
+		else if arg 1 is "flags":
+			send "&9&m---+---&r &bPhoton &9&m---+---&r"
+			send "&bFlags"
+			send "&7w = World, g = global"
+			send " &8• {@t}monsterSpawning {@h}(w)"
+			send " &8• {@t}animalSpawning {@h}(w)"
+			send " &8• {@t}tileDrop {@h}(w)"
+			send " &8• {@t}deathMessages {@h}(g)"
+			send " &8• {@t}chatMessages {@h}(w+g)"
+			send " &8• &c&mtimeCycle (w)"
+command /globalSettings [<text>] [<text>]:
+	permission: photon.settings.global
+	description: Edits server-wide settings
+	aliases: /gSettings, /gs
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /globalSettings [flag] [value]"
+			send "&c&oTo view a flags list, execute &r&c/photon flags&c&o."
+		else if arg 1 is "deathMessages":
+			if arg 2 is "on" or "true" or "enable" or "1":
+				send "{@p} &bGlobal &8❘ {@h}deathMessages{@t} has been set to &atrue{@t}."
+				set {photon.deathMessages} to true
+			else if arg 2 is "off" or "false" or "disable" or "0":
+				send "{@p} &bGlobal &8❘ {@h}deathMessages{@t} has been set to &cfalse{@t}."
+				set {photon.deathMessages} to false
+			else:
+				send "&c&oValue not set"
+				send "&cUsage: /globalSettings %arg-1% [value]"
+		else if arg 1 is "chat" or "chatMessages":
+			if arg 2 is "on" or "true" or "enable" or "1":
+				send "{@p} &bGlobal &8❘ {@h}chatMessages{@t} has been set to &atrue{@t}."
+				set {photon.chatMessages} to true
+			else if arg 2 is "off" or "false" or "disable" or "0":
+				send "{@p} &bGlobal &8❘ {@h}chatMessages{@t} has been set to &cfalse{@t}."
+				set {photon.chatMessages} to false
+			else:
+				send "&c&oValue not set"
+				send "&cUsage: /globalSettings %arg-1% [value]"
+command /worldSettings [<text>] [<text>]:
+	permission: photon.settings.world
+	description: Edits world-wide settings
+	aliases: /wSettings, /ws
+	trigger:
+		if arg 1 is not set:
+			send "&cUsage: /worldSettings [flag] [value]"
+			send "&c&oTo view a flags list, execute &r&c/photon flags&c&o."
+		else if arg 1 is "monsterSpawning":
+			if arg 2 is "on" or "true" or "enable" or "1":
+				send "{@p} &bWorld &8❘ {@h}monsterSpawning{@t} has been set to &atrue{@t} for {@h}%sender's world%{@t}."
+				set {photon.monsterSpawning.world::%sender's world%} to true
+			else if arg 2 is "off" or "false" or "disable" or "0":
+				send "{@p} &bWorld &8❘ {@h}monsterSpawning{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
+				set {photon.monsterSpawning.world::%sender's world%} to false
+			else:
+				send "&c&oValue not set"
+				send "&cUsage: /worldSettings %arg-1% [value]"
+		else if arg 1 is "animalSpawning":
+			if arg 2 is "on" or "true" or "enable" or "1":
+				send "{@p} &bWorld &8❘ {@h}animalSpawning{@t} has been set to &atrue{@t} for {@h}%sender's world%{@t}."
+				set {photon.animalSpawning.world::%sender's world%} to true
+			else if arg 2 is "off" or "false" or "disable" or "0":
+				send "{@p} &bWorld &8❘ {@h}animalSpawning{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
+				set {photon.animalSpawning.world::%sender's world%} to false
+			else:
+				send "&c&oValue not set"
+				send "&cUsage: /worldSettings %arg-1% [value]"
+		else if arg 1 is "tileDrop":
+			if arg 2 is "on" or "true" or "enable" or "1":
+				send "{@p} &bWorld &8❘ {@h}tileDrop{@t} has been set to &atrue{@t} for {@h}%sender's world%{@t}."
+				set {photon.tileDrop.world::%sender's world%} to true
+			else if arg 2 is "off" or "false" or "disable" or "0":
+				send "{@p} &bWorld &8❘ {@h}tileDrop{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
+				set {photon.tileDrop.world::%sender's world%} to false
+			else:
+				send "&c&oValue not set"
+				send "&cUsage: /worldSettings %arg-1% [value]"
+		else if arg 1 is "chatMessages" or "chat":
+			if arg 2 is "on" or "true" or "enable" or "1":
+				send "{@p} &bWorld &8❘ {@h}chatMessages{@t} has been set to &atrue{@t} for {@h}%sender's world%{@t}."
+				set {photon.chatMessages.world::%sender's world%} to true
+			else if arg 2 is "off" or "false" or "disable" or "0":
+				send "{@p} &bWorld &8❘ {@h}chatMessages{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
+				set {photon.chatMessages.world::%sender's world%} to false
+			else:
+				send "&c&oValue not set"
+				send "&cUsage: /worldSettings %arg-1% [value]"
+		#else if arg 1 is "timeCycle" or "time":
+		#	if arg 2 is "day":
+		#		send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &eday{@t} for {@h}%sender's world%{@t}."
+		#		set {photon.timeCycle.world::%sender's world%} to "day"
+		#	else if arg 2 is "night":
+		#		send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &8night{@t} for {@h}%sender's world%{@t}."
+		#		set {photon.timeCycle.world::%sender's world%} to "night"
+		#	else if arg 2 is "off" or "disable" or "false" or "0":
+		#		send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
+		#		set {photon.timeCycle.world::%sender's world%} to false
+		#	else:
+		#		send "&c&oValue not set"
+		#		send "&cUsage: /worldSettings %arg-1% [value]"
+#============== functionality
+on death of player:
+	if {photon.deathMessages} is false:
+		set death message to ""
+on chat:
+	if {photon.chatMessages} is false:
+		cancel event
+	else:
+		if {photon.chatMessages.world::%event-player's world%} is false:
+			cancel event
+on spawn of zombie or skeleton or creeper or slime or blaze or spider or ghast:
+	if {photon.monsterSpawning.world::%event-entity's world%} is false:
+		cancel event
+on spawn of cow or pig or bat or chicken or sheep or villager or squid:
+	if {photon.animalSpawning.world::%event-entity's world%} is false:
+		cancel event
+on item spawn:
+	if {photon.tileDrop.world::%event-entity's world%} is false:
+		cancel event

@@ -1,5 +1,5 @@
 options:
-	p: &a ⦿&f                 #prefix
+	p: &a ●&f                 #prefix
 	t: &f                      #default text color
 	h: &7                      #highlighted text color
 	em: &cInvalid Permissions  #permission error

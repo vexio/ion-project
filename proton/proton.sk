@@ -968,3 +968,14 @@ command /reply [<text>]:
 #			else if arg 2 is not set:
 #				send "&cUsage: /xp [give|set|remove] [amount] (player)"
 #
+command /give [<player>] [<item>] [<integer>]:
+	permission: proton.give
+	permission message: {@em}
+	usage: /give [player|*] [item] (amount)
+	description: Give a player an item
+	trigger:
+		if arg 1 is set:
+			if arg 2 is set:
+				if arg 3 is set:
+					give arg-3 arg-2 to arg-1
+					send "{@p} Gave {@h}%arg-1%{@t} &a%arg-3%x %arg-2%{@t}." to sender

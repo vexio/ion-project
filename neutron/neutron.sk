@@ -3,7 +3,7 @@ options:
 # For more information on customization & configuration settings,
 # visit https://www.vehicola.github.io/ion-project
 #
-	p: &4 ⦿&f
+	p: &4 ●&f
 	t: &f
 	h: &7
 	em: &cInvalid Permissions
