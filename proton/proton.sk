@@ -2,11 +2,14 @@ options:
 	p: &6 ●&f #
 	t: &f
 	h: &7
+	a: &4&lERROR&c
 	em: &cInvalid Permissions
 	joinMessage: &e%name of player% joined
 	quitMessage: &e%name of player% left
 	animals: pig and sheep and cow and horse and chicken and wolf and ocelot and bat and mooshroom and rabbit and squid and villager and donkey
 	monsters: cave spider and enderman and spider and zombie pigman and blaze and creeper and guardian and endermite and ghast and magma cube and silverfish and skeleton and slime and witch and wither skeleton and zombie
+aliases:
+	blacklisted = tnt, bedrock, command block,
 on load:
 	if {proton.maxHealth} is not set:
 		set {proton.maxHealth} to 10
@@ -100,7 +103,7 @@ command /tp [<player>] [<player>]:
 		else if arg 1 is set:
 			if arg 2 is not set:
 				if {proton.teleporting::%sender%} is true:
-					send "&c&oPlayer is already being teleported"
+					send "{@a} &cPlayer is already being teleported"
 					stop
 				else:
 					set {proton.teleporting::%sender%} to true
@@ -132,7 +135,7 @@ command /tphere [<player>]:
 			send "&cUsage: /tphere [player]"
 		else if arg 1 is set:
 			if {proton.teleporting::%arg-1%} is true:
-				send "&c&oPlayer is already being teleported"
+				send "{@a} &cPlayer is already being teleported"
 				stop
 			else:
 				set {proton.teleporting::%arg-1%} to true
@@ -199,7 +202,7 @@ command /tpcoords [<integer>] [<integer>] [<integer>]:
 			if arg 2 is set:
 				if arg 3 is set:
 					if {proton.teleporting::%arg-1%} is true:
-						send "&c&oPlayer is already being teleported"
+						send "{@a} &cPlayer is already being teleported"
 						stop
 					else:
 						set {_x} to arg-1
@@ -237,7 +240,7 @@ command /home:
 	trigger:
 		if {proton.home::%sender's uuid%} is set:
 			if {proton.teleporting::%sender%} is true:
-				send "&c&oPlayer is already being teleported"
+				send "{@a} &cPlayer is already being teleported"
 				stop
 			else:
 				set {proton.teleporting::%sender%} to true
@@ -247,7 +250,7 @@ command /home:
 				wait 1 second
 				delete {proton.teleporting::%sender%}
 		else:
-			send "&c&oYou do not have a home set."
+			send "{@a} &cYou do not have a home set."
 			send "&cUsage: /sethome"
 command /warp [<text>] [<player>]:
 	permission: proton.warp
@@ -264,11 +267,11 @@ command /warp [<text>] [<player>]:
 							send "{@p} Teleported {@h}%player-arg%{@t} to {@h}%arg-1%{@t}." to sender
 							send "{@p} Teleported to {@h}%arg-1%{@t}." to player-arg
 						else:
-							send "&cYou don't have permission to this warp" to sender
+							send "{@a} &cYou don't have permission to this warp" to sender
 					else:
-						send "&cWarp &6%arg-1%&c does not exist" to sender
+						send "{@a} &cWarp &6%arg-1%&c does not exist" to sender
 				else:
-					send "&cYou don't have permission to warp other players."
+					send "{@a} {@em}"
 			else:
 				if "%{proton.warps::*}%" contains "%arg-1%":
 					if sender has permission "proton.warp.%arg-1%":
@@ -276,9 +279,9 @@ command /warp [<text>] [<player>]:
 						teleport player to {proton.warpLoc::%arg-1%}
 						send "{@p} Teleported to {@h}%arg-1%{@t}." to player
 					else:
-						send "&cYou don't have permission to this warp" to player
+						send "{@a} {@em}" to player
 				else:
-					send "&cWarp &6%arg-1%&c does not exist" to player
+					send "{@a} &cWarp &6%arg-1%&c does not exist" to player
 		else:
 			send "&cUsage: /warp [warpName] (player)"
 		stop
@@ -290,12 +293,12 @@ command /setwarp [<text>]:
 	trigger:
 		if arg 1 is set:
 			if "%arg-1%" contains " " or "," or "." or "::" or ";" or "<" or ">" or "{" or "}" or "(" or ")" or ":" or "-" or "+":
-				send "&cWarps cannot contain special characters. Use &oA-Z&r&c and &o0-9&r&c."
+				send "{@a} &cWarps cannot contain special characters. Use &oA-Z&r&c and &o0-9&r&c."
 				stop
 			else:
 				if "%{proton.warps::*}%" contains "%arg-1%":
 					if {proton.warpOverwite::%player%} is not set:
-						send "&cWarp &6%arg-1%&c already exists. To overwrite, run the command again."
+						send "{@a} &cWarp &6%arg-1%&c already exists. To overwrite, run the command again."
 						set {proton.warpOverwite::%player%} to true
 						wait 10 seconds
 						delete {proton.warpOverwite::%player%}
@@ -333,7 +336,7 @@ command /delwarp [<text>]:
 				remove arg-1 from {proton.warps::*}
 				send "{@p} Warp {@h}%arg-1%{@t} has been deleted"
 			else:
-				send "&cWarp &6%arg-1%&c does not exist."
+				send "{@a} &cWarp &6%arg-1%&c does not exist."
 		else:
 			send "&cUsage: /delwarp [warpName]"
 command /warps:
@@ -366,7 +369,7 @@ command /spawn [<player>]:
 		if {proton.spawn} is set:
 			if arg 1 is set:
 				if {proton.teleporting::%arg-1%} is true:
-					send "&c&oPlayer is already being teleported"
+					send "{@a} &c&oPlayer is already being teleported"
 					stop
 				else:
 					set {proton.teleporting::%arg-1%} to true
@@ -378,7 +381,7 @@ command /spawn [<player>]:
 					delete {proton.teleporting::%arg-1%}
 			else:
 				if {proton.teleporting::%sender%} is true:
-					send "&c&oPlayer is already being teleported"
+					send "{@a} &c&oPlayer is already being teleported"
 					stop
 				else:
 					set {proton.teleporting::%arg-1%} to true
@@ -518,7 +521,7 @@ command /speed [<number>] [<player>]:
 						send "{@p} Your walk speed was set to {@h}%arg-1%{@t}."
 						set the player's walk speed to {_speed}
 				else if arg 1 is greater than 5:
-					send "&c&oToo large of a number."
+					send "{@a} &cToo large of a number."
 					send "&cUsage: /speed [0-5] (player)"
 				else:
 					if player is flying:
@@ -539,7 +542,7 @@ command /speed [<number>] [<player>]:
 						send "{@p} Your walk speed was set to {@h}%arg-1%{@t}." to player-arg
 						set the player-arg's walk speed to {_speed}
 				else if arg 1 is greater than 5:
-					send "&c&oToo large of a number."
+					send "{@a} &cToo large of a number."
 					send "&cUsage: /speed [0-5] (player-arg)"
 				else:
 					if player-arg is flying:
@@ -561,7 +564,7 @@ command /blacklist [<text>] [<offline player>]:
 				send "{@p} {@h}%offline player-arg%{@t} has been added to the &8blacklist{@t}."
 				add "%offline player-arg%" to {proton.blacklist::*}
 			else:
-				send "&c&oSpecify a player"
+				send "{@a} &cSpecify a player"
 				send "&cUsage: /blacklist %arg-1% (player)"
 		else if arg 1 is "remove" or "delete" or "-":
 			if arg 2 is set:
@@ -569,10 +572,10 @@ command /blacklist [<text>] [<offline player>]:
 					send "{@p} {@h}%offline player-arg%{@t} has been removed from the &8blacklist{@t}."
 					remove "%offline player-arg%" from {proton.blacklist::*}
 				else:
-					send "&c&oThat player is not on the blacklist"
+					send "{@a} &cThat player is not on the blacklist"
 					send "&cUsage: /blacklist %arg-1% &m%arg-2%"
 			else:
-				send "&c&oSpecify a player"
+				send "{@a} &cSpecify a player"
 				send "&cUsage: /blacklist %arg-1% (player)"
 		else if arg 1 is "list":
 			send "{@p} &8Blacklist&7:"
@@ -618,7 +621,7 @@ command /whitelist [<text>] [<offline player>]:
 				send "{@p} {@h}%offline player-arg%{@t} has been added to the &7Whitelist{@t}."
 				add "%offline player-arg%" to {proton.whitelist::*}
 			else:
-				send "&c&oSpecify a player"
+				send "{@a} &cSpecify a player"
 				send "&cUsage: /whitelist %arg-1% (player)"
 		else if arg 1 is "remove" or "delete" or "-":
 			if arg 2 is set:
@@ -626,10 +629,10 @@ command /whitelist [<text>] [<offline player>]:
 					send "{@p} {@h}%offline player-arg%{@t} has been removed from the &7Whitelist{@t}."
 					remove "%offline player-arg%" from {proton.whitelist::*}
 				else:
-					send "&c&oThat player is not on the whitelist"
+					send "{@a} &cThat player is not on the whitelist"
 					send "&cUsage: /whitelist %arg-1% &m%arg-2%"
 			else:
-				send "&c&oSpecify a player"
+				send "{@a} &cSpecify a player"
 				send "&cUsage: /whitelist %arg-1% (player)"
 		else if arg 1 is "list":
 			send "{@p} &7Whitelist&7:"
@@ -775,7 +778,7 @@ command /heal [<player>]:
 					heal player-arg
 					send "{@p} Healed {@h}%player-arg%{@t}."
 				else:
-					send "{@em}"
+					send "{@a} {@em}"
 		else:
 			heal player
 			send "{@p} You were healed."
@@ -873,7 +876,7 @@ command /back:
 			set {proton.lastLoc::%sender%} to {_lastLoc}
 			send "{@p} Teleported to previous location."
 		else:
-			send "&cYou have no previous location!"
+			send "{@a} &cYou have no previous location!"
 #command /killall [<text>]:
 #	permission: proton.killall
 #	permission message: {@em}
@@ -905,7 +908,7 @@ command /message [<player>] [<text>]:
 					send "&7[&6You &7» &6%player-arg%&7] &f%arg-2%" to sender
 					send "&7[&6%sender% &7» &6You&7] &f%arg-2%" to player-arg
 				else:
-					send "&c%player-arg% is not online"
+					send "{@a} &c%player-arg% is not online"
 			else:
 				send "&cUsage: /message %arg-1% [message]"
 		else:
@@ -924,7 +927,7 @@ command /reply [<text>]:
 			else:
 				send "&cUsage: /reply [message]"
 		else:
-			send "&cYou have no-one to reply to. :("
+			send "{@a} &cYou have no-one to reply to. :("
 #command /xp [<text>] [<integer>] [<player>]:
 #	permission: proton.xp
 #	permission message: {@em}
@@ -968,14 +971,77 @@ command /reply [<text>]:
 #			else if arg 2 is not set:
 #				send "&cUsage: /xp [give|set|remove] [amount] (player)"
 #
-command /give [<player>] [<item>] [<integer>]:
+command /give [<player>] [<text>] [<integer>]:
 	permission: proton.give
 	permission message: {@em}
+	aliases: /giveitem
 	usage: /give [player|*] [item] (amount)
 	description: Give a player an item
+	aliases: /g
 	trigger:
 		if arg 1 is set:
 			if arg 2 is set:
-				if arg 3 is set:
-					give arg-3 arg-2 to arg-1
-					send "{@p} Gave {@h}%arg-1%{@t} &a%arg-3%x %arg-2%{@t}." to sender
+				set {_item} to "%arg-2%"
+				replace all "_" with " " in {_item}
+				set {_item} to "%{_item}%" parsed as item
+				if {_item} is an item:
+					if arg 3 is set:
+						set {_amount} to arg-3
+						loop {_amount} times:
+							give {_item} to player-arg
+						if "%sender%" = "%player-arg%":
+							send "{@p} Recieved &a%{_amount}%x %{_item}%{@t}."
+						else:
+							send "{@p} Given &a%{_amount}%x %{_item}%{@t} to {@h}%player-arg%{@t}."
+					else:
+						give {_item} to player-arg
+						if "%sender%" = "%player-arg%":
+							send "{@p} Recieved &a1x %{_item}%{@t}."
+						else:
+							send "{@p} Given &a1x %{_item}%{@t} to {@h}%player-arg%{@t}."
+				else:
+					send "{@a} &6%arg-2%&c is not an item."
+					send "&cUsage: /give %arg-1% &m%arg-2%&r&c (amount)"
+			else:
+				send "&cUsage: /give %arg-1% [item] (amount)"
+		else:
+			send "&cUsage: /give [player] [item] (amount)"
+command /item [<text>] [<integer>]:
+	permission: proton.item
+	permission message: {@em}
+	usage: /item [item] (amount)
+	aliases: /i
+	description: Gives an item to sender
+	trigger:
+		if arg 1 is set:
+			set {_item} to "%arg-1%"
+			replace all "_" with " " in {_item}
+			set {_item} to "%{_item}%" parsed as item
+			if {_item} is an item:
+				if {_item} = blacklisted:
+					if player has permission "proton.item.blacklist.bypass" or "proton.give.blacklist.bypass":
+						send "{@a} &6%{_item}%&c is blacklisted"
+					else:
+						if arg 2 is set:
+							set {_amount} to arg-2
+							loop {_amount} times:
+								give {_item} to player
+							send "{@p} Recieved &a%{_amount}%x %{_item}%{@t}."
+						else:
+							give {_item} to player
+							send "{@p} Recieved &a1x %{_item}%{@t}."
+				else:
+					if arg 2 is set:
+						set {_amount} to arg-2
+						loop {_amount} times:
+							give {_item} to player
+						send "{@p} Recieved &a%{_amount}%x %{_item}%{@t}."
+					else:
+						give {_item} to player
+						send "{@p} Recieved &a1x %{_item}%{@t}."
+			else:
+				send "{@a} &6%{_item}%&c is not an item."
+				if arg 2 is set:
+					send "&cUsage: /item &m%{_item}%&r&c %arg-2%"
+				else:
+					send "&cUsage: /item &m%{_item}%&r&c (amount)"

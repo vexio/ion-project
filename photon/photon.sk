@@ -1,27 +1,28 @@
 options:
-	p: &9 ●&f
+	p: &3 ●&f
 	t: &f
 	h: &7
 	em: &cInvalid Permissions
+	a: &4&lERROR&c
 command /photon [<text>]:
 	description: Shows all commands in Photon
 	trigger:
 		if arg 1 is not set:
 			send "&cUsage: /photon [help]"
 		else if arg 1 is "help":
-			send "&9&m---+---&r &bPhoton &9&m---+---&r"
+			send "&3&m---+---&r &bPhoton &3&m---+---&r"
 			send " &8• &7A List of commands can be found here:"
-			send " &f&nhttps://goo.gl/EAFlng"
+			send " &f&nhttps://goo.gl/bDit36"
 		else if arg 1 is "flags":
-			send "&9&m---+---&r &bPhoton &9&m---+---&r"
+			send "&3&m---+---&r &bPhoton &3&m---+---&r"
 			send "&bFlags"
 			send "&7w = World, g = global"
 			send " &8• {@t}monsterSpawning {@h}(w)"
 			send " &8• {@t}animalSpawning {@h}(w)"
-			send " &8• {@t}tileDrop {@h}(w)"
+			send " &8• {@t}tileDrops {@h}(w)"
 			send " &8• {@t}deathMessages {@h}(g)"
 			send " &8• {@t}chatMessages {@h}(w+g)"
-			send " &8• &c&mtimeCycle (w)"
+			send " &8• {@t}timeCycle {@h}(w)"
 command /globalSettings [<text>] [<text>]:
 	permission: photon.settings.global
 	description: Edits server-wide settings
@@ -29,7 +30,7 @@ command /globalSettings [<text>] [<text>]:
 	trigger:
 		if arg 1 is not set:
 			send "&cUsage: /globalSettings [flag] [value]"
-			send "&c&oTo view a flags list, execute &r&c/photon flags&c&o."
+			send "&cTo view a flags list, execute &r&c/photon flags&c&o."
 		else if arg 1 is "deathMessages":
 			if arg 2 is "on" or "true" or "enable" or "1":
 				send "{@p} &bGlobal &8❘ {@h}deathMessages{@t} has been set to &atrue{@t}."
@@ -38,7 +39,7 @@ command /globalSettings [<text>] [<text>]:
 				send "{@p} &bGlobal &8❘ {@h}deathMessages{@t} has been set to &cfalse{@t}."
 				set {photon.deathMessages} to false
 			else:
-				send "&c&oValue not set"
+				send "{@a} &cValue not set"
 				send "&cUsage: /globalSettings %arg-1% [value]"
 		else if arg 1 is "chat" or "chatMessages":
 			if arg 2 is "on" or "true" or "enable" or "1":
@@ -48,7 +49,7 @@ command /globalSettings [<text>] [<text>]:
 				send "{@p} &bGlobal &8❘ {@h}chatMessages{@t} has been set to &cfalse{@t}."
 				set {photon.chatMessages} to false
 			else:
-				send "&c&oValue not set"
+				send "{@a} &cValue not set"
 				send "&cUsage: /globalSettings %arg-1% [value]"
 command /worldSettings [<text>] [<text>]:
 	permission: photon.settings.world
@@ -66,7 +67,7 @@ command /worldSettings [<text>] [<text>]:
 				send "{@p} &bWorld &8❘ {@h}monsterSpawning{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
 				set {photon.monsterSpawning.world::%sender's world%} to false
 			else:
-				send "&c&oValue not set"
+				send "{@a} &cValue not set"
 				send "&cUsage: /worldSettings %arg-1% [value]"
 		else if arg 1 is "animalSpawning":
 			if arg 2 is "on" or "true" or "enable" or "1":
@@ -76,17 +77,17 @@ command /worldSettings [<text>] [<text>]:
 				send "{@p} &bWorld &8❘ {@h}animalSpawning{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
 				set {photon.animalSpawning.world::%sender's world%} to false
 			else:
-				send "&c&oValue not set"
+				send "{@a} &cValue not set"
 				send "&cUsage: /worldSettings %arg-1% [value]"
-		else if arg 1 is "tileDrop":
+		else if arg 1 is "tileDrops":
 			if arg 2 is "on" or "true" or "enable" or "1":
-				send "{@p} &bWorld &8❘ {@h}tileDrop{@t} has been set to &atrue{@t} for {@h}%sender's world%{@t}."
-				set {photon.tileDrop.world::%sender's world%} to true
+				send "{@p} &bWorld &8❘ {@h}tileDrops{@t} has been set to &atrue{@t} for {@h}%sender's world%{@t}."
+				set {photon.tileDrops.world::%sender's world%} to true
 			else if arg 2 is "off" or "false" or "disable" or "0":
-				send "{@p} &bWorld &8❘ {@h}tileDrop{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
-				set {photon.tileDrop.world::%sender's world%} to false
+				send "{@p} &bWorld &8❘ {@h}tileDrops{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
+				set {photon.tileDrops.world::%sender's world%} to false
 			else:
-				send "&c&oValue not set"
+				send "{@a} &cValue not set"
 				send "&cUsage: /worldSettings %arg-1% [value]"
 		else if arg 1 is "chatMessages" or "chat":
 			if arg 2 is "on" or "true" or "enable" or "1":
@@ -96,21 +97,44 @@ command /worldSettings [<text>] [<text>]:
 				send "{@p} &bWorld &8❘ {@h}chatMessages{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
 				set {photon.chatMessages.world::%sender's world%} to false
 			else:
-				send "&c&oValue not set"
+				send "{@a} &cValue not set"
 				send "&cUsage: /worldSettings %arg-1% [value]"
-		#else if arg 1 is "timeCycle" or "time":
-		#	if arg 2 is "day":
-		#		send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &eday{@t} for {@h}%sender's world%{@t}."
-		#		set {photon.timeCycle.world::%sender's world%} to "day"
-		#	else if arg 2 is "night":
-		#		send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &8night{@t} for {@h}%sender's world%{@t}."
-		#		set {photon.timeCycle.world::%sender's world%} to "night"
-		#	else if arg 2 is "off" or "disable" or "false" or "0":
-		#		send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
-		#		set {photon.timeCycle.world::%sender's world%} to false
-		#	else:
-		#		send "&c&oValue not set"
-		#		send "&cUsage: /worldSettings %arg-1% [value]"
+		else if arg 1 is "view":
+			send "&3&m---+---&r &b%sender's world%'s Settings &3&m---+---&r"
+			if {photon.monsterSpawning.world::%sender's world%} is false:
+				send " &8• &cmonsterSpawning"
+			else:
+				send " &8• &amonsterSpawning"
+			if {photon.animalSpawning.world::%sender's world%} is false:
+				send " &8• &canimalSpawning"
+			else:
+				send " &8• &aanimalSpawning"
+			if {photon.tileDrops.world::%sender's world%} is false:
+				send " &8• &ctileDrops"
+			else:
+				send " &8• &atileDrops"
+			if {photon.timeCycle.world::%sender's world%} is false:
+				send " &8• &ctimeCycle"
+			else if {photon.timeCycle.world::%sender's world%} = "day":
+				send " &8• &7timeCycle &e(Day)"
+			else if {photon.timeCycle.world::%sender's world%} = "night":
+				send " &8• &7timeCycle &8(Night)"
+			else:
+				send " &8• &atimeCycle"
+			stop
+		else if arg 1 is "timeCycle" or "time":
+			if arg 2 is "day":
+				send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &eday{@t} for {@h}%sender's world%{@t}."
+				set {photon.timeCycle.world::%sender's world%} to "day"
+			else if arg 2 is "night":
+				send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &8night{@t} for {@h}%sender's world%{@t}."
+				set {photon.timeCycle.world::%sender's world%} to "night"
+			else if arg 2 is "off" or "disable" or "false" or "0":
+				send "{@p} &bWorld &8❘ {@h}timeCycle{@t} has been set to &cfalse{@t} for {@h}%sender's world%{@t}."
+				set {photon.timeCycle.world::%sender's world%} to false
+			else:
+				send "{@a} &cValue not set"
+				send "&cUsage: /worldSettings %arg-1% [value]"
 #============== functionality
 on death of player:
 	if {photon.deathMessages} is false:
@@ -121,12 +145,27 @@ on chat:
 	else:
 		if {photon.chatMessages.world::%event-player's world%} is false:
 			cancel event
-on spawn of zombie or skeleton or creeper or slime or blaze or spider or ghast:
-	if {photon.monsterSpawning.world::%event-entity's world%} is false:
-		cancel event
-on spawn of cow or pig or bat or chicken or sheep or villager or squid:
-	if {photon.animalSpawning.world::%event-entity's world%} is false:
-		cancel event
+on spawn:
+	if event-entity is a zombie or skeleton or creeper or spider or silverfish or blaze or slime or magma cube or witch or ghast or enderman:
+		if {photon.monsterSpawning.world::%event-entity's world%} is false:
+			cancel event
+	else if event-entity is a cow or pig or bat or chicken or sheep or villager or squid or wolf or ocelot or rabbit:
+		if {photon.animalSpawning.world::%event-entity's world%} is false:
+			cancel event
 on item spawn:
-	if {photon.tileDrop.world::%event-entity's world%} is false:
+	if {photon.tileDrops.world::%event-entity's world%} is false:
 		cancel event
+every 1 second:
+	loop all worlds:
+		if {photon.timeCycle.world::%loop-world%} = "day":
+			set time in loop-world to 12:00pm
+		else if {photon.timeCycle.world::%loop-world%} = "night":
+			set time in loop-world to 12:00am
+on tab completion for command "/worldsettings":
+	if argument at 1 is not set:
+		add "monsterSpawning" to completions
+		add "animalSpawning" to completions
+		add "tileDrop" to completions
+		add "deathMessages" to completions
+		add "chatMessages" to completions
+		add "timeCycle" to completions
