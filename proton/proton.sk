@@ -1,14 +1,15 @@
 options:
-	p: &6 ●&f #
+	p: &6 ●&f
 	t: &f
 	h: &7
 	a: &4&lERROR&c
 	em: &cInvalid Permissions
 	joinMessage: &e%name of player% joined
 	quitMessage: &e%name of player% left
+	alert: &4&lALERT&r
 aliases:
-	blacklisted = tnt, bedrock, command block,
-# json.sk
+	blacklisted = tnt, bedrock
+#! json.sk
 # I DO NOT OWN json.sk, I DON'T TAKE ANY CREDIT
 # json.sk BELONGS TO "RezzedUp"
 options:
@@ -206,18 +207,7 @@ function jsonProton(to: text, msg: text, color: boolean = true):
             send uncolored {_msg} to {_player}
 function jsonBroadcastProton(msg: text, color: boolean = true):
     jsonProton("@a", {_msg}, {_color})
-command /json [<text>] [<text>]:
-        permission: "is.op"
-        trigger:
-                set {_to} to arg 1
-                set {_msg} to arg 2
-
-                if arg 1 is not set:
-                        set {_to} to "%player%"
-                if arg 2 is not set:
-                        set {_msg} to "This is a json message! &c&oClick here for no reason!||ttp:&lReally, click your mouse!||cmd:/json @a %{_to}% clicked their mouse on json..."
-                jsonProton({_to}, {_msg})
-# json.sk
+#! json.sk
 # I DO NOT OWN json.sk, I DON'T TAKE ANY CREDIT
 # json.sk BELONGS TO "RezzedUp"
 on load:
@@ -235,7 +225,7 @@ command /proton [<text>]:
 command /gamemode [<text>] [<player=%player%>]:
 	permission: proton.gamemode
 	description: Changes gamemode
-	permission message: {@em}
+	permission message: {@em} [proton.gamemode]
 	usage: /gamemode [gamemode] (player)
 	aliases: /gm
 	trigger:
@@ -267,7 +257,7 @@ command /gamemode [<text>] [<player=%player%>]:
 command /fly [<player=%player%>]:
 	permission: proton.fly
 	description: Toggles flight
-	permission message: {@em}
+	permission message: {@em} [proton.fly]
 	usage: /fly (player)
 	trigger:
 		if {proton.fly::%player-arg%} is true:
@@ -285,7 +275,7 @@ command /fly [<player=%player%>]:
 command /tp [<player>] [<player>]:
 	permission: proton.tp
 	description: Teleports to player
-	permission message: {@em}
+	permission message: {@em} [proton.tp]
 	usage: /tp [player] (player)
 	trigger:
 		if arg 1 is not set:
@@ -317,7 +307,7 @@ command /tp [<player>] [<player>]:
 command /tphere [<player>]:
 	permission: proton.tphere
 	description: Teleports a player to sender
-	permission message: {@em}
+	permission message: {@em} [proton.tphere]
 	usage: /tphere [player]
 	aliases: /s
 	trigger:
@@ -333,39 +323,15 @@ command /tpall:
 	trigger:
 		set {_loc} to sender's location
 		set {_count} to 0
+		set {_countTotal} to 0
 		set {_total} to number of all players
 		loop all players:
 			teleport loop-player to sender's location
 			add 1 to {_count}
+			add 1 to {_countTotal}
 			if {_count} = 20:
-				send "{@p} Sent 20 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 40:
-				send "{@p} Sent 40 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 60:
-				send "{@p} Sent 60 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 80:
-				send "{@p} Sent 80 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 100:
-				send "{@p} Sent 100 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 120:
-				send "{@p} Sent 120 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 140:
-				send "{@p} Sent 140 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 160:
-				send "{@p} Sent 160 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 180:
-				send "{@p} Sent 180 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
-				wait 3 seconds
-			if {_count} = 200:
-				send "{@p} Sent 200 people. Next group in {@h}3s{@t}. &8[&e%{_count}%&7/&e%{_total}%&8]"
+				set {_count} to 0
+				send "{@p} Sent %{_countTotal}% people. Next group in {@h}3s{@t}. &8[&e%{_countTotal}%&7/&e%{_total}%&8]"
 				wait 3 seconds
 		delete {_loc}
 		send "{@p} Teleported all players to your location"
@@ -373,7 +339,7 @@ command /tpall:
 command /tpcoords [<integer>] [<integer>] [<integer>]:
 	permission: proton.tpcoords
 	aliases: /tppos
-	permission message: {@em}
+	permission message: {@em} [proton.tpcoords]
 	usage: /tpcoords [x] [y] [z]
 	trigger:
 		if arg 1 is not set:
@@ -405,7 +371,7 @@ command /tpcoords [<integer>] [<integer>] [<integer>]:
 				send "&cUsage: /tpcoords [x] [y] [z]"
 command /sethome:
 	permission: proton.sethome
-	permission message: {@em}
+	permission message: {@em} [proton.sethome]
 	usage: /sethome
 	trigger:
 		set {proton.home::%sender's uuid%} to sender's location
@@ -415,7 +381,7 @@ command /sethome:
 		send "{@p} Home set at {@h}%{_x}%, %{_y}%, %{_z}%{@t}."
 command /home:
 	permission: proton.home
-	permission message: {@em}
+	permission message: {@em} [proton.home]
 	usage: /home
 	trigger:
 		if {proton.home::%sender's uuid%} is set:
@@ -434,7 +400,7 @@ command /home:
 			send "&cUsage: /sethome"
 command /warp [<text>] [<player>]:
 	permission: proton.warp
-	permission message: {@em}
+	permission message: {@em} [proton.warp]
 	usage: /warp [warpName] (player)
 	trigger:
 		if arg 1 is set:
@@ -447,7 +413,7 @@ command /warp [<text>] [<player>]:
 							send "{@p} Teleported {@h}%player-arg%{@t} to {@h}%arg-1%{@t}." to sender
 							send "{@p} Teleported to {@h}%arg-1%{@t}." to player-arg
 						else:
-							send "{@a} &cYou don't have permission to this warp" to sender
+							send "{@a} {@em} [proton.warp.%arg-1%]" to sender
 					else:
 						send "{@a} &cWarp &6%arg-1%&c does not exist" to sender
 				else:
@@ -459,7 +425,7 @@ command /warp [<text>] [<player>]:
 						teleport player to {proton.warpLoc::%arg-1%}
 						send "{@p} Teleported to {@h}%arg-1%{@t}." to player
 					else:
-						send "{@a} {@em}" to player
+						send "{@a} {@em} [proton.warp.%arg-1%]" to player
 				else:
 					send "{@a} &cWarp &6%arg-1%&c does not exist" to player
 		else:
@@ -467,7 +433,7 @@ command /warp [<text>] [<player>]:
 		stop
 command /setwarp [<text>]:
 	permission: proton.setwarp
-	permission message: {@em}
+	permission message: {@em} [proton.setwarp]
 	usage: /setwarp [warpName]
 	aliases: /warpset
 	trigger:
@@ -501,15 +467,17 @@ command /setwarp [<text>]:
 		stop
 command /delwarp [<text>]:
 	permission: proton.delwarp
-	permission message: {@em}
+	permission message: {@em} [proton.delwarp]
 	usage: /delwarp [warpName]
 	aliases: /warpdel
 	trigger:
 		if arg 1 is "-c":
-			player has permission "proton.resetWarps":
+			if player has permission "proton.resetWarps":
 				clear {proton.warps::*}
 				clear {proton.warpLoc::*}
 				send "{@p} All warps cleared"
+			else:
+				send "&cUsage: /delwarp [warpName]"
 		else if arg 1 is set:
 			if "%{proton.warps::*}%" contains "%arg-1%":
 				delete {proton.warpLoc::%arg-1%}
@@ -521,7 +489,7 @@ command /delwarp [<text>]:
 			send "&cUsage: /delwarp [warpName]"
 command /warps:
 	permission: proton.warps
-	permission message: {@em}
+	permission message: {@em} [proton.warps]
 	usage: /warps
 	aliases: /warplist
 	trigger:
@@ -533,7 +501,7 @@ command /warps:
 		stop
 command /setspawn:
 	permission: proton.setspawn
-	permission message: {@em}
+	permission message: {@em} [proton.setspawn]
 	usage: /setspawn
 	trigger:
 		set {proton.spawn} to sender's location
@@ -543,7 +511,7 @@ command /setspawn:
 		send "{@p} Spawn location set to {@h}%{_x}%, %{_y}%, %{_z}%{@t}."
 command /spawn [<player=%player%>]:
 	permission: proton.spawn
-	permission message: {@em}
+	permission message: {@em} [proton.setwarp]
 	usage: /spawn (player)
 	trigger:
 		if {proton.spawn} is set:
@@ -603,51 +571,75 @@ on join:
 
 command /gmc [<player=%player%>]:
 	permission: proton.gm
-	permission message: {@em}
+	permission message: {@em} [proton.gm]
 	usage: &c/gmc (player)
 	description: Changes gamemode to Creative
 	trigger:
-		set player-arg's gamemode to creative
-		send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
-		if arg 1 isn't sender:
-			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Creative{@t}" to sender
+		if arg-1 is not sender:
+			if player has permission "proton.gm.other":
+				set player-arg's gamemode to creative
+				send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
+				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Creative{@t}" to sender
+			else:
+				send "{@a} {@em} [proton.gm.other]"
+		else:
+			set player-arg's gamemode to creative
+			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
 command /gms [<player>]:
 	permission: proton.gm
-	permission message: {@em}
+	permission message: {@em} [proton.gm]
 	usage: &c/gms (player)
 	description: Changes gamemode to Survival
 	trigger:
-		set player-arg's gamemode to survival
-		send "{@p} Your gamemode has been updated to {@h}Survival{@t}." to player-arg
-		if arg 1 isn't sender:
-			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Survival{@t}" to sender
+		if arg-1 is not sender:
+			if player has permission "proton.gm.other":
+				set player-arg's gamemode to survival
+				send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
+				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Creative{@t}" to sender
+			else:
+				send "{@a} {@em} [proton.gm.other]"
+		else:
+			set player-arg's gamemode to survival
+			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
 command /gma [<player>]:
 	permission: proton.gm
-	permission message: {@em}
+	permission message: {@em} [proton.gm]
 	usage: &c/gma (player)
 	description: Changes gamemode to Adventure
 	trigger:
-		set player-arg's gamemode to adventure
-		send "{@p} Your gamemode has been updated to {@h}Adventure{@t}." to player-arg
-		if arg 1 isn't sender:
-			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Adventure{@t}" to sender
+		if arg-1 is not sender:
+			if player has permission "proton.gm.other":
+				set player-arg's gamemode to adventure
+				send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
+				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Creative{@t}" to sender
+			else:
+				send "{@a} {@em} [proton.gm.other]"
+		else:
+			set player-arg's gamemode to adventure
+			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
 command /gmsp [<player>]:
 	permission: proton.gm
-	permission message: {@em}
+	permission message: {@em} [proton.gm]
 	usage: &c/gmsp (player)
 	description: Changes gamemode to Spectator
 	trigger:
-		set player-arg's gamemode to spectator
-		send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to player-arg
-		if arg 1 isn't sender:
-			send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Spectator{@t}" to sender
+		if arg-1 is not sender:
+			if player has permission "proton.gm.other":
+				set player-arg's gamemode to spectator
+				send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
+				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Creative{@t}" to sender
+			else:
+				send "{@a} {@em} [proton.gm.other]"
+		else:
+			set player-arg's gamemode to spectator
+			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
 on join:
 	set join message to "{@joinMessage}"
 on quit:
 	set leave message to "{@quitMessage}"
 command /top:
 	permission: proton.top
-	permission message: {@em}
+	permission message: {@em} [proton.top]
 	usage: &c/top
 	description: Teleports you up to the highest point above you
 	trigger:
@@ -663,7 +655,7 @@ command /top:
 			stop
 command /speed [<number>] [<player=%player%>]:
 	permission: proton.speed
-	permission message: {@em}
+	permission message: {@em} [proton.speed]
 	usage: &c/speed [0-10] (player)
 	description: Changes walk/flight speed
 	trigger:
@@ -697,7 +689,7 @@ command /speed [<number>] [<player=%player%>]:
 					reset the player-arg's walk speed
 command /blacklist [<text>] [<offline player>]:
 	permission: proton.blacklist
-	permission message: {@em}
+	permission message: {@em} [proton.blacklist]
 	usage: &c/blacklist [add|remove|list|reset] (player)
 	description: Blacklists people to the server
 	trigger:
@@ -729,7 +721,7 @@ command /blacklist [<text>] [<offline player>]:
 				delete {proton.blacklist::*}
 				send "{@p} &8Blacklist{@t} cleared."
 			else:
-				send "{@em}"
+				send "{@a} {@em} [proton.blacklist.reset]"
 		else if arg 1 is "on":
 			set {proton.blacklist} to true
 			send "{@p} Blacklist enabled."
@@ -754,7 +746,7 @@ on connect:
 			stop
 command /whitelist [<text>] [<offline player>]:
 	permission: proton.whitelist
-	permission message: {@em}
+	permission message: {@em} [proton.whitelist]
 	usage: &c/whitelist [add|remove|list|reset] (player)
 	description: Whitelists people to the server
 	trigger:
@@ -786,7 +778,7 @@ command /whitelist [<text>] [<offline player>]:
 				delete {proton.whitelist::*}
 				send "{@p} &7Whitelist{@t} cleared."
 			else:
-				send "{@em}"
+				send "{@a} {@em} [proton.whitelist.reset]"
 		else if arg 1 is "on":
 			set {proton.whitelist} to true
 			send "{@p} Whitelist enabled."
@@ -798,7 +790,7 @@ command /whitelist [<text>] [<offline player>]:
 		stop
 command /time [<text>]:
 	permission: proton.time
-	permission message: {@em}
+	permission message: {@em} [proton.time]
 	usage: &c/time [set] [day|night|noon|midnight|...]
 	description: Sets the time of day
 	trigger:
@@ -824,19 +816,19 @@ command /time [<text>]:
 			send "{@p} Time: %time in world of sender%"
 command /day:
 	permission: proton.time
-	permission message: {@em}
+	permission message: {@em} [proton.time]
 	description: Sets the time of day
 	trigger:
 		player command "/time day"
 command /night:
 	permission: proton.time
-	permission message: {@em}
+	permission message: {@em} [proton.time]
 	description: Sets the time of day
 	trigger:
 		player command "/time night"
 command /weather [<text>]:
 	permission: proton.weather
-	permission message: {@em}
+	permission message: {@em} [proton.weather]
 	usage: &c/weather [sun|rain|thunder]
 	description: Sets the worlds weather
 	trigger:
@@ -856,25 +848,25 @@ on weather change:
 		cancel event
 command /sun:
 	permission: proton.weather
-	permission message: {@em}
+	permission message: {@em} [proton.weather]
 	description: Sets the worlds weather
 	trigger:
 		player command "/weather sun"
 command /rain:
 	permission: proton.weather
-	permission message: {@em}
+	permission message: {@em} [proton.weather]
 	description: Sets the worlds weather
 	trigger:
 		player command "/weather rain"
 command /thunder:
 	permission: proton.weather
-	permission message: {@em}
+	permission message: {@em} [proton.weather]
 	description: Sets the worlds weather
 	trigger:
 		player command "/weather thunder"
 command /head [<text="%player%">]:
 	permission: proton.head
-	permission message: {@em}
+	permission message: {@em} [proton.head]
 	usage: &c/head [player]
 	description: Gives a player head
 	aliases: /skull, /playerhead
@@ -884,54 +876,65 @@ command /head [<text="%player%">]:
 		send "{@p} Given {@h}%arg-1%{@t}'s Head."
 command /clear [<player=%player%>]:
 	permission: proton.clear
-	permission message: {@em}
+	permission message: {@em} [proton.clear]
 	usage: &c/clear [player]
 	description: Clears inventory
 	aliases: /ci, /clearinventory
 	trigger:
-		clear player-arg's inventory
 		if arg 1 isn't sender:
-			send "{@p} Cleared {@h}%player-arg%'s{@t} inventory{@t}."
+			if sender has permission "proton.clear.other":
+				send "{@p} Cleared {@h}%player-arg%'s{@t} inventory{@t}."
+			else:
+				send "{@a} {@em} [proton.clear.other]"
+		clear player-arg's inventory
 		send "{@p} Your inventory has been cleared{@t}." to player-arg
 command /heal [<player=%player%>]:
 	permission: proton.heal
-	permission message: {@em}
+	permission message: {@em} [proton.heal]
 	usage: &c/clear [player]
 	description: Heals to full health
 	trigger:
 		if sender isn't arg 1:
 			if sender doesn't have permission "proton.heal.other":
-				send "{@a} {@em}"
+				send "{@a} {@em} [proton.heal.other]"
+			else:
+				send "{@p} Healed {@h}%player-arg%{@t}."
 		heal player-arg
-		send "{@p} Healed {@h}%player-arg%{@t}."
+		send "{@p} You have been healed." to player-arg
 on command "/heal *":
+	cancel event
 	if player has permission "proton.heal.all":
-		cancel event
 		loop all players:
 			heal loop-player
 		send "{@p} Healed all players"
+	else:
+		send "{@a} {@em} [proton.heal.all]"
 on command "/feed *":
+	cancel event
 	if player has permission "proton.feed.all":
-		cancel event
 		loop all players:
 			set the loop-player's food level to 20
 			apply saturation 2 to loop-player for 10 seconds
 		send "{@p} Nourished all players"
+	else:
+		send "{@a} {@em} [proton.feed.all]"
 command /feed [<player=%player%>]:
 	permission: proton.feed
-	permission message: {@em}
+	permission message: {@em} [proton.feed]
 	usage: &c/feed [player]
 	description: Feeds to full hunger
 	trigger:
 		if sender isn't arg 1:
-			if sender doesn't have permission "proton.heal.other":
-				send "{@a} {@em}"
+			if sender doesn't have permission "proton.feed.other":
+				send "{@a} {@em} [proton.feed.other]"
+			else:
+				send "{@p} Nourished {@h}%player-arg%{@t}."
 		set the player-arg's food level to 20
 		apply saturation 2 to player-arg for 10 seconds
-		send "{@p} Nourished {@h}%player-arg%{@t}."
+		send "{@p} You have been nourished." to player-arg
 command /maxhealth [<integer>]:
 	permission: proton.maxhealth
-	permission message: {@em}
+	permission message: {@em} [proton.maxhealth]
 	usage: &c/maxhealth [number]
 	description: Sets maximum health, goes by hearts.
 	trigger:
@@ -955,7 +958,7 @@ on join:
 		set event-player's max health to {proton.maxHealth}
 command /rename [<text>]:
 	permission: proton.rename
-	permission message: {@em}
+	permission message: {@em} [proton.rename]
 	usage: &c/rename [name]
 	description: Renames held item
 	trigger:
@@ -977,9 +980,19 @@ on sign change:
 			set line 3 to "%colored line 3%"
 		if line 4 is set:
 			set line 4 to "%colored line 4%"
+	else:
+		if line 1 is set:
+			set line 1 to "%uncolored line 1%"
+		if line 2 is set:
+			set line 2 to "%uncolored line 2%"
+		if line 3 is set:
+			set line 3 to "%uncolored line 3%"
+		if line 4 is set:
+			set line 4 to "%uncolored line 4%"
+		send "{@a} {@em} [proton.coloredsign]"
 command /back:
 	permission: proton.back
-	permission message: {@em}
+	permission message: {@em} [proton.back]
 	usage: &c/back
 	description: Teleports to last location
 	trigger:
@@ -992,7 +1005,7 @@ command /back:
 			send "{@a} &cYou have no previous location!"
 command /killall [<text>] [<text="-a">]:
 	permission: proton.killall
-	permission message: {@em}
+	permission message: {@em} [proton.killall]
 	usage: &c/killall [...]
 	description: Kills specified or all entities
 	trigger:
@@ -1041,7 +1054,7 @@ on item spawn:
 		cancel event
 command /message [<player>] [<text>]:
 	permission: proton.message
-	permission message: {@em}
+	permission message: {@em} [proton.message]
 	description: Sends a private message to a player
 	aliases: /msg, /whisper, /w
 	trigger:
@@ -1059,7 +1072,7 @@ command /message [<player>] [<text>]:
 			send "&cUsage: /message [player] [message]"
 command /reply [<text>]:
 	permission: proton.message.reply
-	permission message: {@em}
+	permission message: {@em} [proton.message.reply]
 	description: Replies to last messanger
 	aliases: /r
 	trigger:
@@ -1113,13 +1126,12 @@ command /reply [<text>]:
 #			else if arg 2 is not set:
 #				send "&cUsage: /xp [give|set|remove] [amount] (player)"
 #
-command /give [<player>] [<text>] [<integer>]:
+command /give [<player>] [<text>] [<integer=1>]:
 	permission: proton.give
-	permission message: {@em}
-	aliases: /giveitem
-	usage: /give [player|*] [item] (amount)
+	permission message: {@em} [proton.give]
+	aliases: /giveitem, /g
+	usage: /give [player] [item] (amount)
 	description: Give a player an item
-	aliases: /g
 	trigger:
 		if arg 1 is set:
 			if arg 2 is set:
@@ -1127,30 +1139,26 @@ command /give [<player>] [<text>] [<integer>]:
 				replace all "_" with " " in {_item}
 				set {_item} to "%{_item}%" parsed as item
 				if {_item} is an item:
-					if arg 3 is set:
-						set {_amount} to arg-3
-						loop {_amount} times:
-							give {_item} to player-arg
-						if sender is player-arg:
-							send "{@p} Recieved &a%{_amount}%x %{_item}%{@t}."
-						else:
-							send "{@p} Given &a%{_amount}%x %{_item}%{@t} to {@h}%player-arg%{@t}."
-					else:
+					set {_amount} to arg-3
+					loop {_amount} times:
 						give {_item} to player-arg
-						if sender is not player-arg:
-							send "{@p} Recieved &a1x %{_item}%{@t}."
-						else:
-							send "{@p} Given &a1x %{_item}%{@t} to {@h}%player-arg%{@t}."
+					if sender is player-arg:
+						send "{@p} Recieved &a%{_amount}%x %{_item}%{@t}." to player-arg
+					else:
+						send "{@p} Given &a%{_amount}%x %{_item}%{@t} to {@h}%player-arg%{@t}."
 				else:
-					send "{@a} &6%arg-2%&c is not an item."
-					send "&cUsage: /give %arg-1% &m%arg-2%&r&c (amount)"
+					send "{@a} &6%{_item}% &cis not an item"
+					if arg 3 > 1:
+						send "&cUsage: /give %arg-1% &m%arg-2%&c&r %arg-3%"
+					else:
+						send "&cUsage: /give %arg-1% &m%arg-2%&c&r (amount)"
 			else:
 				send "&cUsage: /give %arg-1% [item] (amount)"
 		else:
 			send "&cUsage: /give [player] [item] (amount)"
 command /item [<text>]:
 	permission: proton.item
-	permission message: {@em}
+	permission message: {@em} [proton.item]
 	usage: /item [item] (amount)
 	aliases: /i
 	description: Gives an item to sender
@@ -1163,24 +1171,21 @@ command /iteminfo [<item=%tool of player%>]:
 	permission: proton.iteminfo
 	permission message: {@em} [proton.itemInfo]
 	usage: /iteminfo (item)
+	aliases: /itemdb
 	description: Displays information of player's held item or specified item
 	trigger:
-		set {_n} to 1
-		loop 6 times:
-			set {_lore.%{_n}%} to line ({_n}) of arg-1's lore
-			add 1 to {_n}
-		set {_n} to 1
-		loop 6 times:
-			if "%{_lore.%{_n}%}%" = "<none>":
-				set {_lore.%{_n}%} to ""
-			add 1 to {_n}
+		set {_lore} to lore of arg 1
+		replace all "||" in {_lore} with "%nl%"
+		replace all "<none>" in {_lore} with ""
 		set {_name} to name of arg-1
-		jsonProton("%player%", "{@p} Item Information: ||&a%arg-1%||ttp:%{_name}%%nl%%{_lore.1}%%nl%%{_lore.2}%%nl%%{_lore.3}%%nl%%{_lore.4}%%nl%%{_lore.5}%%nl%%{_lore.6}%|| &a(ID: %id of arg-1%)")
-		stop
-command /setlore [<integer>] [<text>]:
+		if "%{_name}%" is "<none>":
+			set {_name} to "%type of arg 1%"
+		jsonProton("%player%", "{@p} Item Information: ||&a%type of arg-1%||ttp:%{_name}%%nl%%{_lore}%|| &a(ID: %id of arg-1%:%data value of arg-1%)")
+command /lore [<integer>] [<text>]:
 	permission: proton.lore
 	permission message: {@em} [proton.lore]
-	usage: /setlore [lineNumber] [...]
+	usage: /lore [lineNumber] [...]
+	aliases: /setlore
 	description: Sets a line of player's held item's lore to a text
 	trigger:
 		if player's tool is nothing:
@@ -1195,3 +1200,58 @@ command /setlore [<integer>] [<text>]:
 					send "{@p} Removed {@h}Lore Line %arg-1%{@t}."
 			else:
 				send "&cUsage: /setlore [lineNumber] [...]"
+command /broadcast [<text>]:
+	permission: proton.lore
+	permission message: {@em} [proton.broadcast]
+	usage: /broadcast (text)
+	aliases: /alert
+	description: Sends a message to the whole Server
+	trigger:
+		if arg 1 is set:
+			broadcast "{@alert} %arg 1%"
+		else:
+			send "&cUsage: /broadcast (text)"
+command /list:
+	permission: proton.list
+	permission message: {@em} [proton.list]
+	usage: /list
+	aliases: /staff
+	description: Displays a list of the online players
+	trigger:
+		loop all players:
+			if loop-player has permission "proton.staff":
+				add "%loop-player%" to {_staff::*}
+			else:
+				add "%loop-player%" to {_players::*}
+		set {_staff} to "%{_staff::*}%"
+		replace all " and " in {_staff} with ", "
+		if {_staff} isn't "<none>":
+			send "{@p} Online Staff: &a%{_staff}%"
+		set {_players} to "%{_players::*}%"
+		replace all " and " in {_players} with ", "
+		if {_players} isn't "<none>":
+			send "{@p} Online Players: &a%{_players}%"
+command /giveall [<text>] [<integer=1>]:
+	permission: proton.give.all
+	permission message: {@em} [proton.give.all]
+	usage: /giveall [item] (amount)
+	description: Give all players an item
+	trigger:
+		if arg 1 is set:
+			set {_item} to "%arg-1%"
+			replace all "_" with " " in {_item}
+			set {_item} to "%{_item}%" parsed as item
+			if {_item} is an item:
+				if arg 2 is set:
+					set {_amount} to arg-2
+					loop all players:
+						loop {_amount} times:
+							give {_item} to loop-player
+						if sender is not loop-player:
+							send "{@p} Recieved &a%{_amount}%x %{_item}%{@t}." to loop-player
+					send "{@p} Given &a%{_amount}%x %{_item}%{@t} to {@h}all players{@t}." to sender
+			else:
+				send "{@a} &6%{_item}% &cis not an item"
+				send "&cUsage: /giveall &m%arg-1%&c&r %arg-2%"
+		else:
+			send "&cUsage: /giveall [item] (amount)"
