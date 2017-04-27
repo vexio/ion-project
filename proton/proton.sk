@@ -13,200 +13,200 @@ aliases:
 # I DO NOT OWN json.sk, I DON'T TAKE ANY CREDIT
 # json.sk BELONGS TO "RezzedUp"
 options:
-    debug: false
-    codes: 0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|k|l|m|n|o|r
+	debug: false
+	codes: 0|1|2|3|4|5|6|7|8|9|a|b|c|d|e|f|k|l|m|n|o|r
 function removeColorProton(msg: text) :: text:
-    set {_m::*} to {_msg} split at ""
+	set {_m::*} to {_msg} split at ""
 
-    set {_color-codes} to "{@codes}"
-    set {_colors::*} to {_color-codes} split at "|"
+	set {_color-codes} to "{@codes}"
+	set {_colors::*} to {_color-codes} split at "|"
 
-    set {_new} to ""
+	set {_new} to ""
 
-    loop {_m::*}:
-        set {_char} to loop-value
-        set {_prev} to the last character of {_new}
+	loop {_m::*}:
+		set {_char} to loop-value
+		set {_prev} to the last character of {_new}
 
-        if {_prev} is "&":
+		if {_prev} is "&":
 
-            loop {_colors::*}:
+			loop {_colors::*}:
 
-                if loop-value-2 is {_char}:
-                    set {_skip} to true
+				if loop-value-2 is {_char}:
+					set {_skip} to true
 
-        if {_skip} is set:
-            delete {_skip}
+		if {_skip} is set:
+			delete {_skip}
 
-        else:
-            set {_new} to "%{_new}%%{_char}%"
+		else:
+			set {_new} to "%{_new}%%{_char}%"
 
-    return {_new}
+	return {_new}
 function jsonColorizeProton(msg: text, default-color: text = "&r") :: text:
-    set {_m::*} to {_msg} split at ""
+	set {_m::*} to {_msg} split at ""
 
-    set {_color-codes} to "{@codes}"
-    set {_colors::*} to {_color-codes} split at "|"
+	set {_color-codes} to "{@codes}"
+	set {_colors::*} to {_color-codes} split at "|"
 
-    set {_color} to colored {_default-color}
-    set {_code} to the first character of {_color}
+	set {_color} to colored {_default-color}
+	set {_code} to the first character of {_color}
 
-    set {_new} to ""
-    set {_skip} to 0
+	set {_new} to ""
+	set {_skip} to 0
 
-    loop amount of {_m::*} times:
+	loop amount of {_m::*} times:
 
-        if {_skip} is more than or equal to 1:
-            subtract 1 from {_skip}
+		if {_skip} is more than or equal to 1:
+			subtract 1 from {_skip}
 
-        else:
-            set {_char} to {_m::%loop-number%}
-            set {_next} to {_m::%loop-number + 1%}
+		else:
+			set {_char} to {_m::%loop-number%}
+			set {_next} to {_m::%loop-number + 1%}
 
-            if {@debug} is true:
-                broadcast "&a[Character Check] &r%loop-number%: &7%{_char}% &r&onext: &8%{_next}% &r[%{_color}%color&r]"
+			if {@debug} is true:
+				broadcast "&a[Character Check] &r%loop-number%: &7%{_char}% &r&onext: &8%{_next}% &r[%{_color}%color&r]"
 
-            if {_char} is "&" or {_code}:
+			if {_char} is "&" or {_code}:
 
-                if {@debug} is true:
-                    broadcast "&a[Color Check] &rFOUND: &o%{_char}%%{_next}% &7&m<--&7&o is it valid?"
+				if {@debug} is true:
+					broadcast "&a[Color Check] &rFOUND: &o%{_char}%%{_next}% &7&m<--&7&o is it valid?"
 
-                loop {_colors::*}:
+				loop {_colors::*}:
 
-                    if loop-value-2 is {_next}:
-                        set {_color} to "%{_color}%%{_code}%%{_next}%"
+					if loop-value-2 is {_next}:
+						set {_color} to "%{_color}%%{_code}%%{_next}%"
 
-                        if {_next} is "r":
-                            set {_color} to {_default-color}
+						if {_next} is "r":
+							set {_color} to {_default-color}
 
-                        set {_new} to "%{_new}%%{_color}%"
-                        set {_skip} to 1
+						set {_new} to "%{_new}%%{_color}%"
+						set {_skip} to 1
 
-                if {_skip} is less than or equal to 0:
-                    set {_new} to "%{_new}%%{_char}%"
+				if {_skip} is less than or equal to 0:
+					set {_new} to "%{_new}%%{_char}%"
 
-            else if {_char} is " ":
-                set {_new} to "%{_new}% %{_color}%"
+			else if {_char} is " ":
+				set {_new} to "%{_new}% %{_color}%"
 
-            else:
-                set {_new} to "%{_new}%%{_char}%"
+			else:
+				set {_new} to "%{_new}%%{_char}%"
 
-    return {_new}
+	return {_new}
 function jsonSanitizeProton(msg: text) :: text:
-    if {@debug} is true:
-        broadcast "&a[Sanitize] &7&oSanitizing input..."
+	if {@debug} is true:
+		broadcast "&a[Sanitize] &7&oSanitizing input..."
 
-    set {_m::*} to {_msg} split at ""
+	set {_m::*} to {_msg} split at ""
 
-    loop {_m::*}:
+	loop {_m::*}:
 
-        if loop-value is """":
-            set {_m::%loop-index%} to "\""" # """
+		if loop-value is """":
+			set {_m::%loop-index%} to "\""" # """
 
-        else if loop-value is "\":
-            set {_m::%loop-index%} to "\\"
+		else if loop-value is "\":
+			set {_m::%loop-index%} to "\\"
 
-    set {_new} to join {_m::*} with ""
-    return {_new}
+	set {_new} to join {_m::*} with ""
+	return {_new}
 function jsonFormatProton(msg: text, color: boolean = true) :: text:
-    set {_m::*} to {_msg} split at "||"
+	set {_m::*} to {_msg} split at "||"
 
-    set {_current} to 1
+	set {_current} to 1
 
-    loop {_m::*}:
-        if {_clusters::%{_current}%} is not set:
-            set {_clusters::%{_current}%} to ""
+	loop {_m::*}:
+		if {_clusters::%{_current}%} is not set:
+			set {_clusters::%{_current}%} to ""
 
-        if {_clusters::%{_current}%::text} is not set:
-            set {_clusters::%{_current}%::text} to jsonSanitizeProton(loop-value)
+		if {_clusters::%{_current}%::text} is not set:
+			set {_clusters::%{_current}%::text} to jsonSanitizeProton(loop-value)
 
-        else:
-            set {_tag} to the first 4 characters of loop-value
-            set {_value} to subtext of loop-value from characters 5 to the length of loop-value
+		else:
+			set {_tag} to the first 4 characters of loop-value
+			set {_value} to subtext of loop-value from characters 5 to the length of loop-value
 
-            if {_tag} is "ttp:":
-                set {_clusters::%{_current}%::tooltip} to jsonSanitizeProton({_value})
+			if {_tag} is "ttp:":
+				set {_clusters::%{_current}%::tooltip} to jsonSanitizeProton({_value})
 
-            else if {_tag} is "cmd:":
-                set {_clusters::%{_current}%::command} to jsonSanitizeProton({_value})
+			else if {_tag} is "cmd:":
+				set {_clusters::%{_current}%::command} to jsonSanitizeProton({_value})
 
-            else if {_tag} is "sgt:":
-                set {_clusters::%{_current}%::suggest} to jsonSanitizeProton({_value})
+			else if {_tag} is "sgt:":
+				set {_clusters::%{_current}%::suggest} to jsonSanitizeProton({_value})
 
-            else if {_tag} is "url:":
+			else if {_tag} is "url:":
 
-                if {_value} doesn't contain "http://" or "https://":
-                    set {_value} to "http://%{_value}%"
+				if {_value} doesn't contain "http://" or "https://":
+					set {_value} to "http://%{_value}%"
 
-                set {_clusters::%{_current}%::url} to jsonSanitizeProton({_value})
+				set {_clusters::%{_current}%::url} to jsonSanitizeProton({_value})
 
-            else if {_tag} is "ins:":
-                set {_clusters::%{_current}%::insertion} to jsonSanitizeProton({_value})
+			else if {_tag} is "ins:":
+				set {_clusters::%{_current}%::insertion} to jsonSanitizeProton({_value})
 
-            else:
-                add 1 to {_current}
-                set {_clusters::%{_current}%::text} to jsonSanitizeProton(loop-value)
-                set {_clusters::%{_current}%} to ""
+			else:
+				add 1 to {_current}
+				set {_clusters::%{_current}%::text} to jsonSanitizeProton(loop-value)
+				set {_clusters::%{_current}%} to ""
 
-            if {@debug} is true:
-                broadcast "&a[Tag Check] &3cluster:&b%{_current}% &8(&f&o%{_tag}%&8)"
+			if {@debug} is true:
+				broadcast "&a[Tag Check] &3cluster:&b%{_current}% &8(&f&o%{_tag}%&8)"
 
-    loop {_clusters::*}:
+	loop {_clusters::*}:
 
-        if {@debug} is true:
-            broadcast "&a[Cluster Check] &7&oCluster ##%loop-index% exists."
+		if {@debug} is true:
+			broadcast "&a[Cluster Check] &7&oCluster ##%loop-index% exists."
 
-        set {_i} to loop-index
+		set {_i} to loop-index
 
-        set {_text} to {_clusters::%{_i}%::text}
+		set {_text} to {_clusters::%{_i}%::text}
 
-        if {_color} is true:
-            set {_text} to jsonColorizeProton({_text})
+		if {_color} is true:
+			set {_text} to jsonColorizeProton({_text})
 
-        if {_json} is not set:
-            set {_json} to "{""text"":""%{_text}%"""
-        else:
-            set {_json} to "%{_json}%,{""text"":""%{_text}%"""
+		if {_json} is not set:
+			set {_json} to "{""text"":""%{_text}%"""
+		else:
+			set {_json} to "%{_json}%,{""text"":""%{_text}%"""
 
-        if {_clusters::%{_i}%::tooltip} is set:
+		if {_clusters::%{_i}%::tooltip} is set:
 
-            if {_color} is true:
-                set {_tooltip} to jsonColorizeProton({_clusters::%{_i}%::tooltip})
+			if {_color} is true:
+				set {_tooltip} to jsonColorizeProton({_clusters::%{_i}%::tooltip})
 
-            else:
-                set {_tooltip} to {_clusters::%{_i}%::tooltip}
+			else:
+				set {_tooltip} to {_clusters::%{_i}%::tooltip}
 
-            set {_json} to "%{_json}%,""hoverEvent"":{""action"": ""show_text"",""value"": ""%{_tooltip}%""}"
+			set {_json} to "%{_json}%,""hoverEvent"":{""action"": ""show_text"",""value"": ""%{_tooltip}%""}"
 
-        if {_clusters::%{_i}%::insertion} is set:
-            set {_json} to "%{_json}%,""insertion"":""%{_clusters::%{_i}%::insertion}%"",""obfuscated"":false"
+		if {_clusters::%{_i}%::insertion} is set:
+			set {_json} to "%{_json}%,""insertion"":""%{_clusters::%{_i}%::insertion}%"",""obfuscated"":false"
 
-        if {_clusters::%{_i}%::command} is set:
-            set {_clickable} to "%{_json}%,""clickEvent"":{""action"":""run_command"",""value"":""%{_clusters::%{_i}%::command}%""}"
+		if {_clusters::%{_i}%::command} is set:
+			set {_clickable} to "%{_json}%,""clickEvent"":{""action"":""run_command"",""value"":""%{_clusters::%{_i}%::command}%""}"
 
-        if {_clusters::%{_i}%::suggest} is set:
-            set {_clickable} to "%{_json}%,""clickEvent"":{""action"": ""suggest_command"",""value"": ""%{_clusters::%{_i}%::suggest}%""}"
+		if {_clusters::%{_i}%::suggest} is set:
+			set {_clickable} to "%{_json}%,""clickEvent"":{""action"": ""suggest_command"",""value"": ""%{_clusters::%{_i}%::suggest}%""}"
 
-        if {_clusters::%{_i}%::url} is set:
-            set {_clickable} to "%{_json}%,""clickEvent"":{""action"": ""open_url"",""value"": ""%{_clusters::%{_i}%::url}%""}"
+		if {_clusters::%{_i}%::url} is set:
+			set {_clickable} to "%{_json}%,""clickEvent"":{""action"": ""open_url"",""value"": ""%{_clusters::%{_i}%::url}%""}"
 
-        if {_clickable} is set:
-            set {_json} to "%{_clickable}%}"
-            delete {_clickable}
+		if {_clickable} is set:
+			set {_json} to "%{_clickable}%}"
+			delete {_clickable}
 
-        else:
-            set {_json} to "%{_json}%}"
+		else:
+			set {_json} to "%{_json}%}"
 
-    return "{""text"":"""", ""extra"":[%{_json}%]}"
+	return "{""text"":"""", ""extra"":[%{_json}%]}"
 function jsonProton(to: text, msg: text, color: boolean = true):
-    set {_msg} to jsonFormatProton({_msg}, {_color})
-    execute console command "/tellraw %{_to}% %{_msg}%"
+	set {_msg} to jsonFormatProton({_msg}, {_color})
+	execute console command "/tellraw %{_to}% %{_msg}%"
 
-    if {@debug} is true:
-        set {_player} to {_to} parsed as offline player
-        if {_player} is online:
-            send uncolored {_msg} to {_player}
+	if {@debug} is true:
+		set {_player} to {_to} parsed as offline player
+		if {_player} is online:
+			send uncolored {_msg} to {_player}
 function jsonBroadcastProton(msg: text, color: boolean = true):
-    jsonProton("@a", {_msg}, {_color})
+	jsonProton("@a", {_msg}, {_color})
 #! json.sk
 # I DO NOT OWN json.sk, I DON'T TAKE ANY CREDIT
 # json.sk BELONGS TO "RezzedUp"
