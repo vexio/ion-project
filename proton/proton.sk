@@ -222,56 +222,66 @@ command /proton [<text>]:
 			send "&6&m---+---&r &eProton &6&m---+---&r"
 			send " &8• &7A List of commands can be found here:"
 			send " &f&nhttps://goo.gl/EAFlng"
-command /gamemode [<text>] [<player=%player%>]:
+command /gamemode [<text>] [<text="%player%">]:
 	permission: proton.gamemode
 	description: Changes gamemode
 	permission message: {@em} [proton.gamemode]
 	usage: /gamemode [gamemode] (player)
 	aliases: /gm
 	trigger:
-		if arg 1 is not set:
-			send "&cUsage: /gamemode [num] (player)"
-		else if arg 1 is "creative" or "c" or "1":
-			set player-arg's gamemode to creative
-			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
-			if arg 2 isn't sender:
-				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Creative{@t}." to sender
-		else if arg 1 is "survival" or "s" or "0":
-			set player-arg's gamemode to survival
-			send "{@p} Your gamemode has been updated to {@h}Survival{@t}." to player-arg
-			if arg 2 isn't sender:
-				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Survival{@t}." to sender
-		else if arg 1 is "adventure" or "a" or "2":
-			set player-arg's gamemode to adventure
-			send "{@p} Your gamemode has been updated to {@h}Adventure{@t}." to player-arg
-			if arg 2 isn't sender:
-				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Adventure{@t}." to sender
-		else if arg 1 is "spectator" or "sp" or "3" or "spec":
-			set player-arg's gamemode to spectator
-			send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to player-arg
-			if arg 2 isn't sender:
-				send "{@p} {@h}%player-arg%{@t}'s gamemode was updated to {@h}Spectator{@t}." to sender
+		set {_p} to arg-2 parsed as player
+		if {_p} is online:
+			if arg 1 is not set:
+				send "&cUsage: /gamemode [num] (player)"
+			else if arg 1 is "creative" or "c" or "1":
+				set {_p}'s gamemode to creative
+				send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to {_p}
+				if {_p} isn't sender:
+					send "{@p} {@h}%{_p}%{@t}'s gamemode was updated to {@h}Creative{@t}." to sender
+			else if arg 1 is "survival" or "s" or "0":
+				set {_p}'s gamemode to survival
+				send "{@p} Your gamemode has been updated to {@h}Survival{@t}." to {_p}
+				if {_p} isn't sender:
+					send "{@p} {@h}%{_p}%{@t}'s gamemode was updated to {@h}Survival{@t}." to sender
+			else if arg 1 is "adventure" or "a" or "2":
+				set {_p}'s gamemode to adventure
+				send "{@p} Your gamemode has been updated to {@h}Adventure{@t}." to {_p}
+				if {_p} isn't sender:
+					send "{@p} {@h}%{_p}%{@t}'s gamemode was updated to {@h}Adventure{@t}." to sender
+			else if arg 1 is "spectator" or "sp" or "3" or "spec":
+				set {_p}'s gamemode to spectator
+				send "{@p} Your gamemode has been updated to {@h}Spectator{@t}." to {_p}
+				if {_p} isn't sender:
+					send "{@p} {@h}%{_p}%{@t}'s gamemode was updated to {@h}Spectator{@t}." to sender
+			else:
+				send "{@a} Invalid Argument."
+				send "&cUsage: /gamemode &m%arg-1%&c (player)"
 		else:
-			send "{@a} Invalid Argument."
-			send "&cUsage: /gm [num] (player)"
-command /fly [<player=%player%>]:
+			send "{@a} Player is not online."
+			send "&cUsage: /gamemode %arg-1% &m%arg-2%"
+command /fly [<text="%player%">]:
 	permission: proton.fly
 	description: Toggles flight
 	permission message: {@em} [proton.fly]
 	usage: /fly (player)
 	trigger:
-		if {proton.fly::%player-arg%} is true:
-			delete {proton.fly::%player-arg%}
-			set player-arg's fly mode to false
-			send "{@p} Flight mode {@h}disabled{@t}." to player-arg
-			if arg 1 isn't sender:
-				send "{@p} {@h}%player-arg%{@t}'s flight mode was {@h}disabled{@t}." to sender
+		set {_p} to arg-1 parsed as player
+		if {_p} is online:
+			if {proton.fly::%{_p}%} is true:
+				delete {proton.fly::%{_p}%}
+				set {_p}'s fly mode to false
+				send "{@p} Flight mode {@h}disabled{@t}." to {_p}
+				if arg 1 isn't sender:
+					send "{@p} {@h}%{_p}%{@t}'s flight mode was {@h}disabled{@t}." to sender
+			else:
+				set {proton.fly::%{_p}%} to true
+				set {_p}'s fly mode to true
+				send "{@p} Flight mode {@h}enabled{@t}." to {_p}
+				if arg 1 isn't sender:
+					send "{@p} {@h}%{_p}%{@t}'s flight mode was {@h}enabled{@t}." to sender
 		else:
-			set {proton.fly::%player-arg%} to true
-			set player-arg's fly mode to true
-			send "{@p} Flight mode {@h}enabled{@t}." to player-arg
-			if arg 1 isn't sender:
-				send "{@p} {@h}%player-arg%{@t}'s flight mode was {@h}enabled{@t}." to sender
+			send "{@a} Player is not online."
+			send "&cUsage: /fly &m%arg-1%"
 command /tp [<player>] [<player>]:
 	permission: proton.tp
 	description: Teleports to player
@@ -585,7 +595,7 @@ command /gmc [<player=%player%>]:
 		else:
 			set player-arg's gamemode to creative
 			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
-command /gms [<player>]:
+command /gms [<player=%player%>]:
 	permission: proton.gm
 	permission message: {@em} [proton.gm]
 	usage: &c/gms (player)
@@ -601,7 +611,7 @@ command /gms [<player>]:
 		else:
 			set player-arg's gamemode to survival
 			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
-command /gma [<player>]:
+command /gma [<player=%player%>]:
 	permission: proton.gm
 	permission message: {@em} [proton.gm]
 	usage: &c/gma (player)
@@ -617,7 +627,7 @@ command /gma [<player>]:
 		else:
 			set player-arg's gamemode to adventure
 			send "{@p} Your gamemode has been updated to {@h}Creative{@t}." to player-arg
-command /gmsp [<player>]:
+command /gmsp [<player=%player%>]:
 	permission: proton.gm
 	permission message: {@em} [proton.gm]
 	usage: &c/gmsp (player)
@@ -1062,8 +1072,8 @@ command /message [<player>] [<text>]:
 			if arg 2 is set:
 				if player-arg is online:
 					set {proton.msgReply::%player-arg%} to sender
-					send "&8[&6You &7» &6%player-arg%&8] &f%arg-2%" to sender
-					send "&8[&6%sender% &7» &6You&8] &f%arg-2%" to player-arg
+					send "&8[&6You &7» &6%player-arg%&8] &f&o%arg-2%" to sender
+					send "&8[&6%sender% &7» &6You&8] &f&o%arg-2%" to player-arg
 				else:
 					send "{@a} &c%player-arg% is not online"
 			else:
@@ -1203,14 +1213,14 @@ command /lore [<integer>] [<text>]:
 command /broadcast [<text>]:
 	permission: proton.lore
 	permission message: {@em} [proton.broadcast]
-	usage: /broadcast (text)
+	usage: /broadcast [text]
 	aliases: /alert
 	description: Sends a message to the whole Server
 	trigger:
 		if arg 1 is set:
-			broadcast "{@alert} %arg 1%"
+			broadcast "{@alert} %colored arg 1%"
 		else:
-			send "&cUsage: /broadcast (text)"
+			send "&cUsage: /broadcast [text]"
 command /list:
 	permission: proton.list
 	permission message: {@em} [proton.list]
@@ -1255,3 +1265,41 @@ command /giveall [<text>] [<integer=1>]:
 				send "&cUsage: /giveall &m%arg-1%&c&r %arg-2%"
 		else:
 			send "&cUsage: /giveall [item] (amount)"
+command /powertool [<text>] [<text="clear">]:
+	permission: proton.powertool
+	permission message: {@em} [proton.powertool]
+	usage: /powertool [left|right(click)] [command|clear]
+	description: Bind a command to your tool
+	aliases: /pt
+	trigger:
+		if player's tool is nothing:
+			send "{@a} &cYou can't rename nothing!"
+		else:
+			if arg 1 is "left" or "leftclick":
+				if arg 2 is "clear":
+					delete {proton.powerTool-left::%sender's tool%::%sender%}
+					send "{@p} Unbound Powertool command from {@h}Left-Click{@t} action."
+				else:
+					set {proton.powerTool-left::%sender's tool%::%sender%} to "%arg-2%"
+					send "{@p} Bound &a`%arg-2%`{@t} to {@h}Left-Click{@t} action."
+			else if arg 1 is "right" or "rightclick":
+				if arg 2 is "clear":
+					delete {proton.powerTool-right::%sender's tool%::%sender%}
+					send "{@p} Unbound Powertool command from {@h}Right-Click{@t} action."
+				else:
+					set {proton.powerTool-right::%sender's tool%::%sender%} to "%arg-2%"
+					send "{@p} Bound &a`%arg-2%`{@t} to {@h}Right-Click{@t} action."
+			else if arg 1 is "clear":
+				delete {proton.powerTool-right::%sender's tool%::%sender%}
+				delete {proton.powerTool-left::%sender's tool%::%sender%}
+				send "{@p} Unbound Powertool commands from {@h}Left-Click{@t} and {@h}Right-Click{@t} action."
+			else:
+				send "&cUsage: /powertool [left|right(click)|clear] [command|clear]"
+on left click:
+	player has permission "proton.powertool":
+		if {proton.powerTool-left::%sender's tool%::%sender%} is set:
+			make player execute command "%{proton.powerTool-left::%sender's tool%::%sender%}%"
+on right click:
+	player has permission "proton.powertool":
+		if {proton.powerTool-right::%sender's tool%::%sender%} is set:
+			make player execute command "%{proton.powerTool-right::%sender's tool%::%sender%}%"
