@@ -161,7 +161,7 @@ every 1 second:
 			set time in loop-world to 12:00pm
 		else if {photon.timeCycle.world::%loop-world%} = "night":
 			set time in loop-world to 12:00am
-on tab completion for command "/worldsettings":
+on tab completer for "/worldsettings":
 	if argument at 1 is not set:
 		add "monsterSpawning" to completions
 		add "animalSpawning" to completions
